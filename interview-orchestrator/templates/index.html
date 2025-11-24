@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="interview-container">
+    <!-- Status-Panel -->
+    <div class="status-panel">
+        <h2>Status</h2>
+        <div class="status-grid">
+            <div class="status-item">
+                <span class="status-label">Phase:</span>
+                <span class="status-value" id="status-phase">Wird geladen...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Rolle:</span>
+                <span class="status-value" id="status-role">Undefiniert</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Beantwortete Fragen:</span>
+                <span class="status-value" id="status-questions">0</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Hochgeladene Dateien:</span>
+                <span class="status-value" id="status-files">0</span>
+            </div>
+        </div>
+        <button id="reset-btn" class="btn btn-secondary">Neu starten</button>
+        
+        <!-- Prozess-Aktivität -->
+        <div class="process-activity" id="process-activity" style="display: none;">
+            <div class="process-header">Aktuelle Aktivität</div>
+            <div class="process-message" id="process-message"></div>
+            <div class="process-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Chat-Bereich -->
+    <div class="chat-section">
+        <div class="chat-messages" id="chat-messages">
+            <div class="welcome-message">
+                <h3>Willkommen!</h3>
+                <p>Ich helfe Ihnen dabei, Ihre Geschäftsprozesse zu dokumentieren.</p>
+                <p>Bitte beantworten Sie die folgenden Fragen so detailliert wie möglich.</p>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div id="current-question" class="current-question"></div>
+            <div class="input-group">
+                <input type="text" 
+                       id="answer-input" 
+                       class="answer-input" 
+                       placeholder="Ihre Antwort hier eingeben..."
+                       autocomplete="off">
+                <button id="send-btn" class="btn btn-primary">Senden</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dokument-Upload -->
+    <div class="upload-section">
+        <h2>Dokumente hochladen</h2>
+        <div class="upload-area" id="upload-area">
+            <input type="file" id="file-input" multiple hidden>
+            <p class="upload-text">Dateien hier ablegen oder klicken zum Auswählen</p>
+            <button id="select-files-btn" class="btn btn-secondary">Dateien auswählen</button>
+        </div>
+        <div class="uploaded-files" id="uploaded-files">
+            <h3>Hochgeladene Dateien:</h3>
+            <ul id="files-list" class="files-list"></ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

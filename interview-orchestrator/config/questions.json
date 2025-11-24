@@ -1,0 +1,40 @@
+
+{
+  "roles": ["it", "fach", "management"],
+  "universal_questions": [
+    { "id": "goal", "text": "Was ist das Ziel des Prozesses?", "required": true },
+    { "id": "trigger", "text": "Was triggert den Prozess (Ereignis/Intervall)?", "required": true },
+    { "id": "inputs", "text": "Welche Eingangsdaten und Formate gibt es?", "required": true },
+    { "id": "outputs", "text": "Welche Ergebnisse/Empfänger gibt es?", "required": true },
+    { "id": "systems", "text": "Welche Systeme/Tools sind beteiligt?", "required": true },
+    { "id": "stakeholders", "text": "Welche Stakeholder sind beteiligt?", "required": false },
+    { "id": "constraints", "text": "Gibt es regulatorische/Sicherheitsanforderungen?", "required": false }
+  ],
+  "role_questions": {
+    "it": [
+      { "id": "it_arch", "text": "Wie ist die System-/Schnittstellenarchitektur (Datenflüsse, Protokolle)?", "required": true },
+      { "id": "it_sec", "text": "Gibt es Authentifizierung/Autorisierung, Verschlüsselung, Audit-Logs?", "required": true },
+      { "id": "it_ops", "text": "Wie ist Betrieb/Deployment/Monitoring gelöst?", "required": false }
+    ],
+    "fach": [
+      { "id": "biz_rules", "text": "Welche Geschäftsregeln und Entscheidungslogik gelten?", "required": true },
+      { "id": "sla", "text": "Welche Durchlaufzeiten/SLAs sind relevant?", "required": false }
+    ],
+    "management": [
+      { "id": "kpis", "text": "Welche KPIs/Erfolgskriterien gibt es?", "required": true },
+      { "id": "risks", "text": "Welche Risiken/Compliance-Aspekte sind wesentlich?", "required": true }
+    ]
+  },
+  "discriminators": [
+    {
+      "id": "disc_1",
+      "text": "Liegt der Schwerpunkt auf technischen Integrationen oder fachlichen Regeln?",
+      "options_to_role": { "technische Integrationen": "it", "fachliche Regeln": "fach" }
+    },
+    {
+      "id": "disc_2",
+      "text": "Stehen Zielbilder, KPIs und Risiken im Vordergrund?",
+      "options_to_role": { "Ja": "management", "Nein": "" }
+    }
+  ]
+}

@@ -40,15 +40,15 @@ class InteractiveMistralChat:
         if role_key in ROLES:
             self.current_role = role_key
             self.set_system_prompt()
-            print(f"\n✓ Rolle gewechselt zu: {ROLES[role_key]['name']}\n")
+            print(f"\nRolle gewechselt zu: {ROLES[role_key]['name']}\n")
         else:
-            print(f"\n✗ Unbekannte Rolle. Verfügbare Rollen: {', '.join(ROLES.keys())}\n")
+            print(f"\nUnbekannte Rolle. Verfügbare Rollen: {', '.join(ROLES.keys())}\n")
     
     def clear_chat(self):
         """Löscht die Chat-Historie"""
         self.messages = []
         self.set_system_prompt()
-        print("\n✓ Chat-Verlauf gelöscht\n")
+        print("\nChat-Verlauf gelöscht\n")
     
     def show_history(self):
         """Zeigt die Chat-Historie an"""
@@ -79,7 +79,7 @@ class InteractiveMistralChat:
     
     def show_current_role(self):
         """Zeigt die aktuelle Rolle an"""
-        print(f"\n✓ Aktuelle Rolle: {ROLES[self.current_role]['name']}\n")
+        print(f"\nAktuelle Rolle: {ROLES[self.current_role]['name']}\n")
     
     def handle_command(self, command):
         """Verarbeitet Befehle, die mit / beginnen"""
@@ -105,7 +105,7 @@ class InteractiveMistralChat:
             print("\n👋 Auf Wiedersehen!\n")
             return False
         else:
-            print(f"\n✗ Unbekannter Befehl: {cmd}")
+            print(f"\nUnbekannter Befehl: {cmd}")
             print("Tippe /help für eine Liste verfügbarer Befehle\n")
             return True
     
@@ -136,7 +136,7 @@ class InteractiveMistralChat:
             
             return assistant_message
         except Exception as e:
-            print(f"\n✗ Fehler bei der API-Anfrage: {e}\n")
+            print(f"\nFehler bei der API-Anfrage: {e}\n")
             # Entferne die letzte User-Message bei Fehler
             self.messages.pop()
             return None
@@ -171,10 +171,10 @@ class InteractiveMistralChat:
                     print(response + "\n")
                 
             except KeyboardInterrupt:
-                print("\n\n👋 Chat mit Ctrl+C beendet. Auf Wiedersehen!\n")
+                print("\n\nChat mit Ctrl+C beendet. Auf Wiedersehen!\n")
                 break
             except EOFError:
-                print("\n\n👋 Auf Wiedersehen!\n")
+                print("\n\nAuf Wiedersehen!\n")
                 break
 
 
@@ -182,7 +182,7 @@ def main():
     api_key = os.environ.get("MISTRAL_API_KEY")
     
     if not api_key:
-        print("✗ Fehler: MISTRAL_API_KEY Umgebungsvariable nicht gesetzt!")
+        print("Fehler: MISTRAL_API_KEY Umgebungsvariable nicht gesetzt!")
         return
     
     chat = InteractiveMistralChat(api_key)
