@@ -1,9 +1,11 @@
 """
 Flask-Webanwendung für das Interview-System
 Leichtgewichtige Web-UI mit Streaming, Reset-Funktion, Status-Anzeige und Dokument-Upload
+Inkl. RAG-System für kontextbasierte Fragen aus hochgeladenen Dokumenten
 """
 import os
 import json
+import logging
 from flask import Flask, render_template, request, jsonify, Response, session as flask_session
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
@@ -14,13 +16,19 @@ from interview.role_classifier import RoleClassifier
 from interview.question_generator import DynamicQuestionGenerator
 from interview.engine import InterviewEngine, PHASE_INTAKE, PHASE_ROLE
 from doc.generator import DocGenerator
+from rag.rag_system import RAGSystem
 
 load_dotenv()
+
+# Logging konfigurieren
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'dev-secret-key-change-in-production')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.config['ALLOWED_EXTENSIONS'] = {'pdf', 'txt'}
 
 # Erstelle Upload-Ordner falls nicht vorhanden
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -29,36 +37,86 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 interview_sessions = {}
 session_lock = Lock()
 
+def allowed_file(filename):
+    """Prüft ob die Dateiendung erlaubt ist"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+def get_existing_files():
+    """Scannt den Upload-Ordner nach existierenden Dateien"""
+    existing_files = []
+    upload_dir = app.config['UPLOAD_FOLDER']
+    
+    if not os.path.exists(upload_dir):
+        return existing_files
+    
+    for filename in os.listdir(upload_dir):
+        if allowed_file(filename):
+            filepath = os.path.join(upload_dir, filename)
+            if os.path.isfile(filepath):
+                existing_files.append({
+                    'filename': filename,
+                    'filepath': filepath,
+                    'size': os.path.getsize(filepath)
+                })
+    
+    logger.info(f"📁 {len(existing_files)} existierende Dateien im Upload-Ordner gefunden")
+    return existing_files
+
 def get_or_create_session(session_id):
     """Holt oder erstellt eine Interview-Session (thread-safe)"""
     with session_lock:
         if session_id not in interview_sessions:
-            print(f"\n🆕 Erstelle NEUE Session: {session_id}")
+            logger.info(f"🆕 Erstelle NEUE Session: {session_id}")
             # Initialisiere Interview-Komponenten
             llm_client = MistralClient()
             questions_path = os.path.join(os.path.dirname(__file__), "config", "questions.json")
             repo = QuestionRepo(path=questions_path)
             classifier = RoleClassifier(llm_client, repo)
             question_generator = DynamicQuestionGenerator(llm_client)
+            
+            # Initialisiere RAG-System
+            rag_system = RAGSystem(
+                chunk_size=1000,
+                chunk_overlap=200,
+                top_k=3
+            )
+            
+            # Lade existierende Dateien aus Upload-Ordner
+            existing_files = get_existing_files()
+            
             # Demo-Modus aktiviert: Stoppt nach Rollenklassifikation
-            engine = InterviewEngine(repo, classifier, question_generator, use_dynamic_questions=True, demo_mode=False)
+            engine = InterviewEngine(
+                repo, 
+                classifier, 
+                question_generator, 
+                use_dynamic_questions=True, 
+                demo_mode=False,
+                rag_system=rag_system
+            )
             
             interview_sessions[session_id] = {
                 'engine': engine,
                 'doc_generator': DocGenerator(llm_client),
+                'rag_system': rag_system,
                 'session_data': {
                     'phase': PHASE_INTAKE,
                     'answers': {},
                     'role': None,
                     'intake_questions': [],
                     'role_questions': [],
-                    'uploaded_files': []
+                    'uploaded_files': existing_files
                 }
             }
+            
+            # Initialisiere RAG-System mit existierenden Dateien
+            if existing_files:
+                logger.info(f"🔄 Initialisiere RAG-System mit {len(existing_files)} existierenden Dateien...")
+                file_paths = [f['filepath'] for f in existing_files]
+                rag_system.initialize(file_paths)
         else:
-            print(f"\n♻️  Verwende EXISTIERENDE Session: {session_id}")
-            print(f"   Anzahl intake_questions: {len(interview_sessions[session_id]['session_data'].get('intake_questions', []))}")
-            print(f"   Anzahl Antworten: {len(interview_sessions[session_id]['session_data'].get('answers', {}))}")
+            logger.info(f"♻️  Verwende EXISTIERENDE Session: {session_id}")
+            logger.info(f"   Anzahl intake_questions: {len(interview_sessions[session_id]['session_data'].get('intake_questions', []))}")
+            logger.info(f"   Anzahl Antworten: {len(interview_sessions[session_id]['session_data'].get('answers', {}))}")
         
         return interview_sessions[session_id]
 
@@ -192,7 +250,7 @@ def get_status():
 
 @app.route('/api/upload', methods=['POST'])
 def upload_document():
-    """Dokument-Upload Endpoint (ohne Verarbeitung, nur Speicherung)"""
+    """Dokument-Upload Endpoint - lädt Dateien hoch und re-initialisiert RAG-System"""
     if 'file' not in request.files:
         return jsonify({'success': False, 'message': 'Keine Datei ausgewählt'}), 400
     
@@ -201,6 +259,12 @@ def upload_document():
     
     if file.filename == '':
         return jsonify({'success': False, 'message': 'Keine Datei ausgewählt'}), 400
+    
+    if not allowed_file(file.filename):
+        return jsonify({
+            'success': False, 
+            'message': f'Dateiformat nicht unterstützt. Erlaubt sind: {", ".join(app.config["ALLOWED_EXTENSIONS"])}'
+        }), 400
     
     if file:
         filename = secure_filename(file.filename)
@@ -214,6 +278,38 @@ def upload_document():
             'filepath': filepath,
             'size': os.path.getsize(filepath)
         })
+        
+        # Re-initialisiere RAG-System mit allen hochgeladenen Dateien
+        logger.info(f"📤 Datei hochgeladen: {filename}")
+        all_files = [f['filepath'] for f in interview['session_data']['uploaded_files']]
+        
+        rag_system = interview.get('rag_system')
+        if rag_system:
+            logger.info(f"🔄 Re-initialisiere RAG-System mit {len(all_files)} Dateien...")
+            success = rag_system.initialize(all_files)
+            
+            if success:
+                stats = rag_system.get_stats()
+                logger.info(f"✅ RAG-System initialisiert: {stats}")
+                return jsonify({
+                    'success': True,
+                    'message': f'Datei "{filename}" erfolgreich hochgeladen und indexiert',
+                    'file': {
+                        'filename': filename,
+                        'size': os.path.getsize(filepath)
+                    },
+                    'rag_stats': stats
+                })
+            else:
+                logger.warning("⚠️  RAG-Initialisierung fehlgeschlagen")
+                return jsonify({
+                    'success': True,
+                    'message': f'Datei "{filename}" hochgeladen, aber Indexierung fehlgeschlagen',
+                    'file': {
+                        'filename': filename,
+                        'size': os.path.getsize(filepath)
+                    }
+                })
         
         return jsonify({
             'success': True,
@@ -230,9 +326,81 @@ def get_uploaded_files():
     session_id = request.args.get('session_id', 'default')
     interview = get_or_create_session(session_id)
     
+    # Hole auch RAG-Statistiken
+    rag_stats = None
+    rag_system = interview.get('rag_system')
+    if rag_system:
+        rag_stats = rag_system.get_stats()
+    
     return jsonify({
         'success': True,
-        'files': interview['session_data']['uploaded_files']
+        'files': interview['session_data']['uploaded_files'],
+        'rag_stats': rag_stats
+    })
+
+@app.route('/api/files/<filename>', methods=['DELETE'])
+def delete_file(filename):
+    """Löscht eine hochgeladene Datei"""
+    session_id = request.args.get('session_id', 'default')
+    interview = get_or_create_session(session_id)
+    
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(filename))
+    
+    try:
+        # Entferne Datei aus Dateisystem
+        if os.path.exists(filepath):
+            os.remove(filepath)
+            logger.info(f"🗑️  Datei gelöscht: {filename}")
+        
+        # Entferne aus Session
+        uploaded_files = interview['session_data']['uploaded_files']
+        interview['session_data']['uploaded_files'] = [
+            f for f in uploaded_files if f['filename'] != filename
+        ]
+        
+        # Re-initialisiere RAG-System mit verbleibenden Dateien
+        remaining_files = interview['session_data']['uploaded_files']
+        rag_system = interview.get('rag_system')
+        
+        if rag_system:
+            if remaining_files:
+                logger.info(f"🔄 Re-initialisiere RAG-System mit {len(remaining_files)} verbleibenden Dateien...")
+                file_paths = [f['filepath'] for f in remaining_files]
+                rag_system.initialize(file_paths)
+            else:
+                logger.info("🔄 Keine Dateien mehr vorhanden, setze RAG-System zurück")
+                rag_system.reset()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Datei "{filename}" erfolgreich gelöscht',
+            'remaining_files': len(remaining_files)
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Fehler beim Löschen von {filename}: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'Fehler beim Löschen: {str(e)}'
+        }), 500
+
+@app.route('/api/rag/stats', methods=['GET'])
+def get_rag_stats():
+    """Gibt RAG-System Statistiken zurück"""
+    session_id = request.args.get('session_id', 'default')
+    interview = get_or_create_session(session_id)
+    
+    rag_system = interview.get('rag_system')
+    if rag_system:
+        stats = rag_system.get_stats()
+        return jsonify({
+            'success': True,
+            'stats': stats
+        })
+    
+    return jsonify({
+        'success': False,
+        'message': 'RAG-System nicht verfügbar'
     })
 
 def get_status_info(session_data):

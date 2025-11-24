@@ -16,9 +16,9 @@ class DynamicQuestionGenerator:
     def __init__(self, llm: MistralClient):
         self.llm = llm
         self.num_initial_questions = 9  # 9 Einstiegsfragen zur Rollendefinition
-        self.max_role_questions = 2  # Maximal 2 rollenspezifische Fragen
+        self.max_role_questions = 10  # Maximal 10 rollenspezifische Fragen
     
-    def generate_initial_questions(self, num_questions: int = 9) -> List[Dict[str, Any]]:
+    def generate_initial_questions(self, num_questions: int = 9, document_summary: str = "") -> List[Dict[str, Any]]:
         """
         Generiert 9 strukturierte Einstiegsfragen zur Rollendefinition.
         Diese Fragen basieren auf der Ausarbeitung und sind speziell darauf ausgelegt,
@@ -26,17 +26,31 @@ class DynamicQuestionGenerator:
         
         Args:
             num_questions: Anzahl der zu generierenden Fragen (Standard: 9)
+            document_summary: Optionale Zusammenfassung der hochgeladenen Dokumente
             
         Returns:
             Liste von 9 Fragen-Dictionaries mit id, text, type, options (bei Multiple Choice)
         """
+        # Füge Dokumenten-Zusammenfassung zum System-Prompt hinzu
+        summary_addition = ""
+        if document_summary:
+            summary_addition = f"""
+            
+            **ZUSAMMENFASSUNG DER UNTERNEHMENSDOKUMENTE:**
+            {document_summary}
+            
+            **Nutze diese Informationen, um die Einstiegsfragen spezifischer auf die Organisation anzupassen.**
+            Die Fragen sollten sich auf die konkrete Situation im beschriebenen Unternehmen beziehen.
+            Referenziere spezifische Prozesse, Systeme oder Strukturen aus der Zusammenfassung wo sinnvoll.
+            """
+        
         system_prompt = {
             "role": "system",
-            "content": """Du bist ein Experte für Prozessanalyse und Organisationspsychologie.
+            "content": f"""Du bist ein Experte für Prozessanalyse und Organisationspsychologie.
             Deine Aufgabe ist es, 9 strukturierte Einstiegsfragen zu erstellen, die dabei helfen, die Rolle einer Person zu identifizieren.
 
             **WICHTIG: Die Fragen basieren auf einer wissenschaftlichen Ausarbeitung zur Rollendefinition!**
-
+{summary_addition}
             Die drei Rollen sind:
 
             **IT-Rolle** (Technische Verantwortliche):
@@ -83,23 +97,23 @@ class DynamicQuestionGenerator:
             - Fragen 2-6: type="text"
 
             Antworte AUSSCHLIESSLICH im folgenden JSON-Format:
-            {
+            {{
             "questions": [
-                {
+                {{
                 "id": "role_function",
                 "text": "Welche Rolle bzw. Funktion haben Sie in Ihrem Unternehmen?",
                 "type": "text",
                 "required": true
-                },
-                {
+                }},
+                {{
                 "id": "eindeutige_id",
                 "text": "Die Frage selbst",
                 "type": "text|choice",
                 "options": ["Option1", "Option2"],
                 "required": true
-                }
+                }}
             ]
-            }
+            }}
 
             WICHTIG: Generiere GENAU 9 Fragen in der oben beschriebenen Reihenfolge!
             """
@@ -109,20 +123,20 @@ class DynamicQuestionGenerator:
             "role": "user",
             "content": f"""Generiere GENAU {num_questions} strukturierte Einstiegsfragen zur Rollendefinition.
 
-Die Fragen MÜSSEN genau diesem Schema folgen:
-1. Rolle/Funktion (OFFEN - keine Auswahloptionen!)
-2. Aufgaben/Verantwortungsbereich (Offen)
-3. Ziele im Prozess (Offen)
-4. Probleme/Herausforderungen (Offen)
-5. Zusammenarbeit mit anderen Rollen (Offen)
-6. Erfolgsmessung (Offen)
-7. Treffen Sie hauptsächlich operative Entscheidungen? (Ja/Nein)
-8. Sind Sie verantwortlich für technische Systeme oder Software? (Ja/Nein)
-9. Leiten Sie Projekte oder Teams? (Ja/Nein)
+            Die Fragen MÜSSEN genau diesem Schema folgen:
+            1. Rolle/Funktion (OFFEN - keine Auswahloptionen!)
+            2. Aufgaben/Verantwortungsbereich (Offen)
+            3. Ziele im Prozess (Offen)
+            4. Probleme/Herausforderungen (Offen)
+            5. Zusammenarbeit mit anderen Rollen (Offen)
+            6. Erfolgsmessung (Offen)
+            7. Treffen Sie hauptsächlich operative Entscheidungen? (Ja/Nein)
+            8. Sind Sie verantwortlich für technische Systeme oder Software? (Ja/Nein)
+            9. Leiten Sie Projekte oder Teams? (Ja/Nein)
 
-Diese Fragen basieren auf einer wissenschaftlichen Ausarbeitung und sind optimal für die Rollenzuordnung.
+            Diese Fragen basieren auf einer wissenschaftlichen Ausarbeitung und sind optimal für die Rollenzuordnung.
 
-Antworte mit genau {num_questions} Fragen im JSON-Format."""
+            Antworte mit genau {num_questions} Fragen im JSON-Format."""
         }
         
         try:
@@ -152,7 +166,8 @@ Antworte mit genau {num_questions} Fragen im JSON-Format."""
         role: str,
         answers: Dict[str, str],
         previous_questions: List[Dict[str, Any]],
-        question_number: int
+        question_number: int,
+        document_context: str = ""
     ) -> Optional[Dict[str, Any]]:
         """
         Generiert eine rollenspezifische Folgefrage.
@@ -163,6 +178,7 @@ Antworte mit genau {num_questions} Fragen im JSON-Format."""
             answers: Bisherige Antworten
             previous_questions: Bereits gestellte rollenspezifische Fragen
             question_number: Nummer der rollenspezifischen Frage
+            document_context: Optionaler Kontext aus hochgeladenen Dokumenten
             
         Returns:
             Frage-Dictionary oder None wenn keine weitere Frage nötig
@@ -211,10 +227,22 @@ Antworte mit genau {num_questions} Fragen im JSON-Format."""
         current_topic_index = (question_number - 1) % len(topics) if topics else 0
         current_topic = topics[current_topic_index] if topics else "Allgemein"
         
+        # Füge Dokumentenkontext hinzu falls verfügbar
+        context_addition = ""
+        if document_context:
+            context_addition = f"""
+
+**RELEVANTER KONTEXT AUS DOKUMENTEN:**
+{document_context}
+
+**Berücksichtige diesen Kontext bei der Formulierung deiner Frage.**
+Stelle Fragen, die helfen, die dokumentierten Prozesse und die Rolle der Person darin besser zu verstehen.
+"""
+        
         system_prompt = {
             "role": "system",
             "content": f"""Du bist ein Experte für Prozessanalyse und führst ein strukturiertes Interview mit einer Person aus der Rolle: {role_descriptions.get(role, role)}.
-
+{context_addition}
 **WICHTIGE REGELN:**
 1. Stelle BREITE Fragen zu verschiedenen Themen, nicht tiefe Nachfragen zum selben Detail
 2. Wenn eine Antwort vage ist ("weiß ich nicht", "kann ich nichts zu sagen"), wechsle das Thema
@@ -250,20 +278,40 @@ Wenn alle Themen abgedeckt wurden, antworte:
 """
         }
         
-        # Bereite kompakten Kontext auf (nur Zusammenfassung, nicht alle Details)
+        # Bereite kompakten Kontext auf mit Fokus auf letzte Interaktion
         answered_count = len(answers)
         last_answer = list(answers.values())[-1] if answers else "Noch keine Antwort"
+        
+        # Erstelle Kontext aus vorherigen Fragen und Antworten für besseres Follow-up
+        conversation_context = ""
+        if previous_questions:
+            # Zeige die letzten 2 Fragen und Antworten für Kontext
+            recent_qa = []
+            for q in previous_questions[-2:]:
+                q_id = q.get('id')
+                q_text = q.get('text', '')
+                answer = answers.get(q_id, 'Keine Antwort')
+                recent_qa.append(f"F: {q_text}\nA: {answer[:150]}...")
+            
+            if recent_qa:
+                conversation_context = "\n\n**Bisherige Fragen & Antworten:**\n" + "\n\n".join(recent_qa)
         
         user_prompt = {
             "role": "user",
             "content": f"""Bisheriger Interview-Verlauf:
 - Anzahl beantworteter Fragen: {answered_count}
-- Letzte Antwort: "{last_answer[:100]}..."
+- Letzte Antwort: "{last_answer[:200]}..."
+{conversation_context}
 
 **Stelle jetzt eine Frage zum Thema: {current_topic}**
 
 Dies ist Frage #{question_number} für die Rolle {role}.
-Fokussiere auf das aktuelle Thema, nicht auf Details der letzten Antwort.
+
+**WICHTIG:** 
+- Berücksichtige die letzte Antwort, um spezifischer nachzufragen
+- Wenn die letzte Antwort interessante Details enthält, frage tiefer nach
+- Wenn die Antwort vage war, stelle eine konkretere Frage
+- Nutze den Dokumenten-Kontext für präzisere Fragen
 
 Antworte im JSON-Format."""
         }

@@ -1,6 +1,6 @@
 # Intelligenter Fragebogen - KI-Assistent
 
-KI-gestützter Befragungs-Assistent zur Informationsaufnahme und Prozessdokumentation
+KI-gestützter Befragungs-Assistent zur Informationsaufnahme und Prozessdokumentation mit RAG-System
 
 ## Über das Projekt
 
@@ -10,6 +10,7 @@ Dieser intelligente Fragebogen hilft dabei, Geschäftsprozesse zu dokumentieren,
 - erkennt fehlende oder unklare Informationen und fragt gezielt nach
 - dokumentiert die Antworten strukturiert (z.B. als Prozessbeschreibung)
 - kann als Vorstufe zur Automatisierung genutzt werden
+- **NEU: Nutzt hochgeladene Dokumente (PDF/TXT) als Kontext für bessere Fragen (RAG-System)**
 
 ## Installation
 
@@ -32,7 +33,26 @@ MISTRAL_API_KEY=your_api_key_here
 
 ## Verwendung
 
-### Chat-Interface (Empfohlen)
+### Web-Interface (Empfohlen)
+
+Starte die Web-Anwendung:
+
+```bash
+python web_app.py
+```
+
+Oder doppelklicke auf `start_web.bat` (Windows)
+
+Die Web-Anwendung läuft dann auf `http://localhost:5000`
+
+#### Features der Web-Anwendung:
+- **Dokument-Upload**: Lade PDF- oder TXT-Dateien hoch
+- **RAG-Integration**: Das System nutzt die hochgeladenen Dokumente automatisch als Kontext
+- **Intelligente Fragen**: Fragen werden auf Basis der Dokumente angepasst
+- **Session-Management**: Mehrere gleichzeitige Interviews möglich
+- **Live-Status**: Echtzeit-Anzeige des Interview-Fortschritts
+
+### Chat-Interface (Alternativ)
 
 Starte den interaktiven Chat direkt:
 
@@ -58,43 +78,78 @@ uvicorn app.main:app --reload
 
 Die API läuft dann auf `http://127.0.0.1:8000`
 
-Beim Start wird automatisch eine Session erstellt und die erste Frage angezeigt.
+## RAG-System (Retrieval-Augmented Generation)
 
-API-Endpoints:
-- `POST /start` - Neue Session starten
-- `POST /answer` - Antwort senden
-- `GET /status/{session_id}` - Status abrufen
-- `POST /document` - Dokumentation generieren
+Das Interview-Tool enthält nun ein **RAG-System**, das hochgeladene Dokumente analysiert und als Kontext für die Fragengenerierung nutzt.
+
+### Funktionsweise
+
+1. **Dokumente hochladen**: Lade PDF- oder TXT-Dateien über die Web-Oberfläche hoch
+2. **Automatische Indexierung**: Das System erstellt automatisch Embeddings und einen Vektorindex
+3. **Kontextbasierte Fragen**: Bei jeder Frage wird relevanter Kontext aus den Dokumenten abgerufen
+4. **Angepasste Fragen**: Das LLM generiert Fragen, die auf die spezifische Organisation zugeschnitten sind
+
+### Unterstützte Dateiformate
+
+- **PDF**: Automatische Textextraktion aus PDF-Dokumenten
+- **TXT**: Plain-Text-Dateien
+
+### Technische Details
+
+- **Embeddings**: sentence-transformers (all-MiniLM-L6-v2)
+- **Vektorstore**: FAISS für schnelle semantische Suche
+- **Chunking**: Intelligente Textaufteilung mit Überlappung
+- **Retrieval**: Top-3 relevanteste Dokumente pro Frage
+
+### Beispiel-Workflow
+
+```
+1. Starte Web-App → http://localhost:5000
+2. Lade Prozessdokumente hoch (z.B. "Prozessbeschreibung.pdf")
+3. Starte Interview → System initialisiert RAG
+4. Beantworte Fragen → Fragen basieren auf deinen Dokumenten
+5. Generiere Dokumentation → Vollständige Prozessdokumentation
+```
 
 ## Projektstruktur
 
 ```
 interview-orchestrator/
-├── chat.py                 # Chat-Interface (Haupteinstieg)
-├── start_chat.bat          # Windows-Starter
+├── chat.py                 # Chat-Interface
+├── web_app.py              # Web-Interface (Flask)
+├── start_chat.bat          # Windows-Starter für Chat
+├── start_web.bat           # Windows-Starter für Web
 ├── app/
 │   ├── main.py            # FastAPI REST-API
 │   ├── models.py          # Datenmodelle
 │   └── llm/
 │       └── mistral_client.py
 ├── interview/
-│   ├── engine.py          # Interview-Logik
+│   ├── engine.py          # Interview-Logik (mit RAG-Integration)
 │   ├── repo.py            # Fragen-Repository
+│   ├── question_generator.py  # Dynamische Fragengenerierung (RAG-aware)
 │   └── role_classifier.py # Rollen-Klassifikation
+├── rag/                    # NEU: RAG-System
+│   ├── __init__.py
+│   └── rag_system.py      # Dokumentenverarbeitung und Retrieval
 ├── doc/
 │   └── generator.py       # Dokumenten-Generator
-└── config/
-    └── questions.json     # Fragenkatalog
+├── config/
+│   └── questions.json     # Fragenkatalog (Fallback)
+└── uploads/               # Hochgeladene Dokumente
 ```
 
 ## Features
 
 - ✅ Rollenbasierte Fragestellung (IT, Management, Fachabteilung)
 - ✅ Intelligente Rollenerkennung via KI
+- ✅ **RAG-System für kontextbasierte Fragen**
+- ✅ **PDF/TXT Dokument-Upload und Analyse**
+- ✅ Web-Interface mit Echtzeit-Updates
 - ✅ Interaktives Chat-Interface
 - ✅ Automatische Dokumentgenerierung
 - ✅ REST-API für Integration
-- ✅ Speicherung der Dokumentation
+- ✅ Session-Management für mehrere Interviews
 
 ## Entwickelt für
 

@@ -13,13 +13,15 @@ class InterviewEngine:
         classifier: RoleClassifier,
         question_generator: Optional[DynamicQuestionGenerator] = None,
         use_dynamic_questions: bool = True,
-        demo_mode: bool = False
+        demo_mode: bool = False,
+        rag_system = None
     ):
         self.repo = repo
         self.classifier = classifier
         self.question_generator = question_generator
         self.use_dynamic_questions = use_dynamic_questions and question_generator is not None
         self.demo_mode = demo_mode
+        self.rag_system = rag_system  # RAG-System für kontextbasierte Fragen
 
     def _unanswered(self, questions, answers):
         for q in questions:
@@ -143,7 +145,21 @@ class InterviewEngine:
         # Erste 9 Fragen generieren (falls noch keine gestellt wurden)
         if not asked_questions:
             print("\n🤖 Generiere 9 allgemeine Einstiegsfragen mit KI...")
-            initial_questions = self.question_generator.generate_initial_questions(num_questions=9)
+            
+            # Generiere Dokument-Zusammenfassung falls verfügbar
+            document_summary = ""
+            if self.rag_system and self.rag_system.is_initialized:
+                print("📚 Generiere Zusammenfassung der hochgeladenen Dokumente...")
+                document_summary = self.rag_system.generate_document_summary(
+                    llm_client=self.question_generator.llm
+                )
+                if document_summary:
+                    print(f"✅ Zusammenfassung erstellt ({len(document_summary)} Zeichen)")
+            
+            initial_questions = self.question_generator.generate_initial_questions(
+                num_questions=9,
+                document_summary=document_summary
+            )
             print(f"✅ {len(initial_questions)} Fragen generiert")
             session["intake_questions"] = initial_questions
             asked_questions = initial_questions
@@ -183,11 +199,43 @@ class InterviewEngine:
             return None
         
         print(f"\n🤖 Generiere rollenspezifische Frage #{question_number} für Rolle '{role}'...")
+        
+        # Hole RAG-Kontext für rollenspezifische Frage
+        rag_context = ""
+        if self.rag_system and self.rag_system.is_initialized:
+            # Erstelle kontextbezogene Suchanfrage basierend auf:
+            # 1. Der Rolle
+            # 2. Der letzten Frage (falls vorhanden)
+            # 3. Der letzten Antwort (falls vorhanden)
+            
+            # Baue Suchquery aus bisherigem Kontext
+            query_parts = [role, "Aufgaben", "Prozesse", "Verantwortlichkeiten"]
+            
+            # Füge letzte Frage hinzu für Kontext
+            if role_questions:
+                last_question = role_questions[-1]
+                last_question_text = last_question.get('text', '')
+                if last_question_text:
+                    query_parts.append(last_question_text[:100])  # Erste 100 Zeichen
+                
+                # Füge letzte Antwort hinzu für spezifischeren Kontext
+                last_question_id = last_question.get('id')
+                if last_question_id and last_question_id in answers:
+                    last_answer = answers[last_question_id]
+                    if last_answer:
+                        query_parts.append(last_answer[:150])  # Erste 150 Zeichen
+            
+            role_query = " ".join(query_parts)
+            print(f"📚 Hole kontextspezifischen RAG-Kontext...")
+            print(f"   Query basiert auf: Rolle, letzte Frage & Antwort")
+            rag_context = self.rag_system.get_context_for_question(role_query)
+        
         role_question = self.question_generator.generate_role_specific_question(
             role=role,
             answers=answers,
             previous_questions=role_questions,
-            question_number=question_number
+            question_number=question_number,
+            document_context=rag_context
         )
         
         if role_question:
