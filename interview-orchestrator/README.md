@@ -26,10 +26,29 @@ Dieser intelligente Fragebogen hilft dabei, Geschäftsprozesse zu dokumentieren,
 pip install -r requirements.txt
 ```
 
-3. `.env` Datei erstellen mit Mistral API-Key:
-```
-MISTRAL_API_KEY=your_api_key_here
-```
+3. **Lokales LLM einrichten (Ollama mit Mistral-Small)**:
+
+   a) Ollama installieren: https://ollama.ai/download
+   
+   b) Ollama starten:
+   ```bash
+   ollama serve
+   ```
+   
+   c) Mistral-Small Modell herunterladen:
+   ```bash
+   ollama pull mistral-small
+   ```
+   
+   d) `.env` Datei erstellen/anpassen:
+   ```
+   LOCAL_LLM_URL=http://localhost:11434
+   LOCAL_LLM_MODEL=mistral-small
+   ```
+
+   **Alternative Server:**
+   - LM Studio: `LOCAL_LLM_URL=http://localhost:1234`
+   - vLLM: `LOCAL_LLM_URL=http://localhost:8000`
 
 ## Verwendung
 

@@ -3,7 +3,7 @@ uvicorn[standard]
 pydantic
 python-dotenv
 jinja2
-mistralai
+requests
 flask
 werkzeug
 # RAG-System Dependencies (neueste stabile Versionen)
