@@ -1,0 +1,189 @@
+{
+  "role": "fach",
+  "role_name": "Fachabteilung / Mitarbeitende",
+  "role_description": "Sachbearbeiter, operative Rollen - Konkrete Arbeitsschritte, reale Probleme, Medienbrüche, manuelle Tätigkeiten",
+  "documentation_goals": [
+    "Aufgabenbereich & Tagesroutine",
+    "Detaillierte Prozessschritte",
+    "Inputdaten & Ausgaben",
+    "Probleme & Workarounds",
+    "Fachliche Voraussetzungen & Regeln"
+  ],
+  "fields": {
+    "themenfeld_a_allgemein": {
+      "name": "Allgemeine Fragen",
+      "fields": {
+        "position": {
+          "question": "Welche Position haben Sie in der Fachabteilung?",
+          "type": "text",
+          "required": true,
+          "hint": "Offene Frage zur Kontextualisierung"
+        },
+        "berufserfahrung_jahre": {
+          "question": "Wie lange arbeiten Sie bereits in dieser Funktion / mit diesem Prozess?",
+          "type": "number",
+          "unit": "Jahre/Monate",
+          "required": true,
+          "hint": "Schätzung der Fachkompetenz und Prozesskenntnis"
+        },
+        "arbeitszeit_dokumentverarbeitung": {
+          "question": "Wie viel Zeit pro Tag / Woche verbringen Sie mit Dokumentverarbeitung?",
+          "type": "number",
+          "unit": "Stunden oder Prozent",
+          "required": true,
+          "hint": "Messbarkeit des Workload-Volumens"
+        },
+        "hauptaufgaben": {
+          "question": "Welche Aufgaben führen Sie in diesem Prozess hauptsächlich durch?",
+          "type": "multiple_choice",
+          "options": [
+            "Dokumente erfassen / einscannen",
+            "Daten eingeben",
+            "Dokumente prüfen / validieren",
+            "Daten in Systeme übertragen",
+            "Entscheidungen treffen (Genehmigungen, Routing)",
+            "Exceptions bearbeiten (Fehler, Abweichungen)",
+            "Kundenabwicklung/Kommunikation",
+            "Sonstiges"
+          ],
+          "required": true,
+          "hint": "Aufgabenspektrum abbilden"
+        },
+        "anteil_hoeherwertige_aufgaben": {
+          "question": "Wie viel Ihrer Arbeitszeit möchten Sie gerne mit höherwertigen Aufgaben verbringen (statt Routine)?",
+          "type": "number",
+          "unit": "Prozent",
+          "required": false,
+          "hint": "Motivation für Automation erfassen"
+        }
+      }
+    },
+    "themenfeld_b_prozessablaeufe": {
+      "name": "Detaillierte Prozessabläufe",
+      "fields": {
+        "tagesablauf_schritte": {
+          "question": "Beschreiben Sie Ihren typischen Arbeitstag: Welche Schritte führen Sie nacheinander durch?",
+          "type": "text",
+          "required": true,
+          "hint": "Vollständige Prozessabbildung. Orientierung: 1. Dokument erhält... 2. Ich prüfe... 3. Ich finde... 4. Ich entscheide... 5. Ich leite weiter..."
+        },
+        "extrahierte_informationen": {
+          "question": "Welche Informationen extrahieren Sie aus den Dokumenten?",
+          "type": "text_list",
+          "required": true,
+          "hint": "Detaillierte Feldliste: z.B. Kundennummer, Rechnungsbetrag, Lieferdatum, Unterschrift, Positionsnummer, Versand-Adresse"
+        },
+        "daten_zielsysteme": {
+          "question": "Wo müssen Sie diese Informationen eintragen oder weitergeben?",
+          "type": "multiple_choice",
+          "options": [
+            "Excel-Tabellen",
+            "Formularfelder in Systemen",
+            "E-Mails an Kollegen",
+            "Mehrere Systeme",
+            "Ausdrucke / Akten",
+            "Sonstiges"
+          ],
+          "required": true,
+          "hint": "Datenflüsse und Zielsysteme identifizieren"
+        },
+        "verwendete_systeme_detail": {
+          "question": "Welche Systeme nutzen Sie konkret?",
+          "type": "text",
+          "required": false,
+          "conditional": "daten_zielsysteme contains 'Mehrere Systeme'",
+          "hint": "Falls mehrere Systeme: Auflistung der konkreten Systemnamen"
+        }
+      }
+    },
+    "themenfeld_c_entscheidungslogik": {
+      "name": "Entscheidungslogiken & Exceptions",
+      "fields": {
+        "entscheidungskriterien": {
+          "question": "Nach welchen Kriterien treffen Sie Entscheidungen im Prozess?",
+          "type": "text",
+          "required": true,
+          "hint": "Detaillierte Geschäftsregeln. Format: 'Wenn [Bedingung], dann [Aktion]', z.B. 'Wenn Betrag > 10.000€, dann an Geschäftsführer weiterleiten'"
+        },
+        "ausnahmefaelle": {
+          "question": "Welche Ausnahmefälle oder Sondersituationen treten auf?",
+          "type": "text_with_frequency",
+          "required": true,
+          "hint": "Auflistung mit Häufigkeitsangabe: Fehlende Daten, unlesbare Dokumente, falsche Formate, Widersprüche, mehrsprachige Dokumente"
+        },
+        "exception_handling": {
+          "question": "Wie reagieren Sie auf diese Exceptions? Gibt es einen Eskalationsprozess?",
+          "type": "text",
+          "required": true,
+          "hint": "Ablauf bei Problemen - Fehlerbehandlung für die Lösung wichtig"
+        }
+      }
+    },
+    "themenfeld_d_probleme": {
+      "name": "Probleme & Verbesserungspotenzial",
+      "fields": {
+        "frustrationen_zeitfresser": {
+          "question": "Was sind die größten Frustrationen oder Zeitfresser in Ihrer Arbeit?",
+          "type": "multiple_choice",
+          "options": [
+            "Langsame oder fehleranfällige Systeme",
+            "Manuelle, repetitive Arbeitsschritte",
+            "Unklare oder widersprüchliche Anweisungen",
+            "Zeitdruck / unrealistische Deadlines",
+            "Mangelnde oder fehlerhafte Eingangsdaten",
+            "Häufige Rückfragen oder Korrekturen",
+            "Sonstiges"
+          ],
+          "required": true,
+          "hint": "Benutzerfreundlichkeit und Automatisierungsgewinne erkennen"
+        },
+        "fehlerhaeufigkeit": {
+          "question": "Wie oft treten diese Fehler durchschnittlich auf?",
+          "type": "choice",
+          "options": ["täglich", "wöchentlich", "selten"],
+          "required": true
+        },
+        "workarounds": {
+          "question": "Gibt es derzeit Workarounds oder Umwege, die Sie nehmen?",
+          "type": "text",
+          "required": true,
+          "hint": "z.B. externe Excel-Listen, E-Mail-Austausch - Systemdefizite aufdecken"
+        },
+        "kundenkontakt_kenntnis": {
+          "question": "Wie gut kennen Sie die Kunden oder externe Partner in diesem Prozess?",
+          "type": "scale",
+          "scale_min": 1,
+          "scale_max": 5,
+          "scale_labels": {"1": "Gar nicht", "5": "Sehr gut"},
+          "required": true
+        },
+        "kunden_rueckfragen": {
+          "question": "Gibt es regelmäßige Rückfragen an Kunden?",
+          "type": "text",
+          "required": false,
+          "conditional": "kundenkontakt_kenntnis >= 3",
+          "hint": "Externe Kommunikationsanforderungen erkennen"
+        },
+        "prozess_transparenz_wichtigkeit": {
+          "question": "Wie wichtig ist es für Sie, dass Sie den Prozess noch verstehen und nachvollziehen können?",
+          "type": "scale",
+          "scale_min": 1,
+          "scale_max": 5,
+          "scale_labels": {"1": "Unwichtig", "5": "Sehr wichtig"},
+          "required": true,
+          "hint": "Benutzerakzeptanz und Nachverfolgbarkeitsanforderungen"
+        },
+        "gewuenschte_transparenz": {
+          "question": "Welche Art von Transparenz / Dokumentation wünschen Sie sich?",
+          "type": "text",
+          "required": false,
+          "conditional": "prozess_transparenz_wichtigkeit >= 4"
+        }
+      }
+    }
+  },
+  "completion_criteria": {
+    "minimum_required_fields": 12,
+    "required_themes": ["themenfeld_a_allgemein", "themenfeld_b_prozessablaeufe", "themenfeld_c_entscheidungslogik"]
+  }
+}

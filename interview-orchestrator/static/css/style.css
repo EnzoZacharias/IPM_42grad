@@ -7,15 +7,15 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #333;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    padding: 20px;
+    padding: 15px;
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
     background: white;
     border-radius: 12px;
@@ -27,33 +27,437 @@ body {
 header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 30px;
+    padding: 15px 30px;
     text-align: center;
 }
 
 header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
 }
 
 .subtitle {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     opacity: 0.95;
 }
 
 /* Main Content */
 main {
-    padding: 30px;
+    padding: 20px;
 }
 
+/* Neues 2-Spalten Layout */
 .interview-container {
     display: grid;
-    grid-template-columns: 300px 1fr 350px;
-    gap: 25px;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
     align-items: start;
+    min-height: calc(100vh - 150px);
 }
 
-/* Status-Panel */
+/* Linke Sidebar */
+.sidebar-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Scrollbar für Sidebar */
+.sidebar-left::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-left::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-left::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 2px;
+}
+
+/* Cards - Kompakt */
+.card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: white;
+    cursor: pointer;
+    border-bottom: 1px solid #e9ecef;
+    user-select: none;
+}
+
+.card-header:hover {
+    background: #f8f9fa;
+}
+
+.card-header h3 {
+    font-size: 0.9rem;
+    color: #495057;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-toggle {
+    font-size: 0.7rem;
+    color: #adb5bd;
+    transition: transform 0.2s;
+}
+
+.card.collapsed .card-toggle {
+    transform: rotate(-90deg);
+}
+
+.card-body {
+    padding: 12px;
+}
+
+/* Status Grid - Angepasst für lange Texte */
+.status-grid-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.status-row .status-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+
+.status-row .status-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #495057;
+    text-align: right;
+    word-break: break-word;
+}
+
+/* Progress - Kompakt */
+.progress-compact {
+    margin-bottom: 8px;
+}
+
+.progress-compact .progress-bar-container {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.progress-compact .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 4px;
+    transition: width 0.3s;
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+}
+
+.progress-percent {
+    font-weight: 600;
+    color: #667eea;
+}
+
+.progress-fields {
+    color: #6c757d;
+}
+
+/* Themes List - Kompakt */
+.themes-list-compact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.themes-list-compact .theme-item {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 4px 8px;
+    padding: 8px 0;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.themes-list-compact .theme-item:last-child {
+    border-bottom: none;
+}
+
+.themes-list-compact .theme-status {
+    font-size: 0.9rem;
+    grid-row: 1;
+    grid-column: 1;
+}
+
+.themes-list-compact .theme-name {
+    grid-row: 1;
+    grid-column: 2;
+    color: #495057;
+    line-height: 1.4;
+}
+
+.themes-list-compact .theme-progress {
+    grid-row: 1;
+    grid-column: 3;
+    color: #6c757d;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.themes-list-compact .theme-progress-bar {
+    grid-row: 2;
+    grid-column: 2 / 4;
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.themes-list-compact .theme-progress-fill {
+    height: 100%;
+    background: #667eea;
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+
+/* Completed Interviews - Kompakt */
+.completed-list-compact {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+
+.completed-list-compact li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    background: white;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s;
+}
+
+.completed-list-compact li:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.completed-list-compact .role-name {
+    font-weight: 500;
+    color: #495057;
+    flex: 1;
+}
+
+.completed-list-compact .progress-badge {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    background: #e9ecef;
+    border-radius: 10px;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+/* Upload Area - Kompakt */
+.upload-area-compact {
+    text-align: center;
+    padding: 12px;
+    border: 2px dashed #dee2e6;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+}
+
+.upload-area-compact:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.upload-area-compact.drag-over {
+    border-color: #667eea;
+    background: #e8ebff;
+}
+
+.files-list-compact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.files-list-compact li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    background: white;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.files-list-compact .file-name {
+    flex: 1;
+    word-break: break-all;
+    line-height: 1.3;
+}
+
+.files-list-compact .file-remove {
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* Backend Options - Kompakt */
+.backend-options {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.backend-option-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #e9ecef;
+    flex: 1;
+}
+
+.backend-option-compact:hover {
+    border-color: #667eea;
+}
+
+.backend-option-compact input {
+    margin: 0;
+}
+
+.backend-option-compact .backend-status {
+    margin-left: auto;
+}
+
+.model-info {
+    font-size: 0.7rem;
+    color: #6c757d;
+    display: block;
+}
+
+/* Action Buttons - Kompakt */
+.action-buttons-compact {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-export-compact,
+.btn-reset-compact {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-export-compact {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.btn-export-compact:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+}
+
+.btn-reset-compact {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-reset-compact:hover {
+    background: #5a6268;
+}
+
+/* Process Activity - Kompakt */
+.process-activity-compact {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    border-radius: 6px;
+    padding: 10px;
+    border-left: 3px solid #667eea;
+}
+
+.process-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #495057;
+}
+
+.process-spinner-small {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #e9ecef;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Legacy Status-Panel Styles (Fallback) */
 .status-panel {
     background: #f8f9fa;
     border-radius: 8px;
@@ -118,6 +522,119 @@ main {
     }
 }
 
+/* Fortschrittsanzeige */
+.progress-section {
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.progress-section h3 {
+    font-size: 1rem;
+    color: #667eea;
+    margin-bottom: 12px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 6px;
+    transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+#progress-text {
+    font-weight: 600;
+    color: #667eea;
+    font-size: 1rem;
+}
+
+#progress-detail {
+    color: #888;
+}
+
+/* Themenfelder-Fortschritt */
+.themes-progress {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.themes-progress h4 {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.themes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.theme-item {
+    display: grid;
+    grid-template-columns: 24px 1fr auto 60px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.85rem;
+}
+
+.theme-item:last-child {
+    border-bottom: none;
+}
+
+.theme-status {
+    font-size: 1rem;
+}
+
+.theme-name {
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.theme-progress {
+    color: #888;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.theme-progress-bar {
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.theme-progress-fill {
+    height: 100%;
+    background: #667eea;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
 .process-header {
     font-size: 0.85rem;
     font-weight: 600;
@@ -163,14 +680,109 @@ main {
     }
 }
 
-/* Chat-Bereich */
+/* LLM Backend Selector */
+.llm-backend-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.llm-backend-section h3 {
+    font-size: 1rem;
+    color: #667eea;
+    margin-bottom: 12px;
+}
+
+.backend-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.backend-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 12px;
+    background: white;
+    border-radius: 6px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.backend-option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.backend-option input[type="radio"] {
+    margin-right: 10px;
+    accent-color: #667eea;
+}
+
+.backend-option input[type="radio"]:checked + .backend-label {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.backend-option:has(input[type="radio"]:checked) {
+    border-color: #667eea;
+    background: #f0f4ff;
+}
+
+.backend-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+}
+
+.backend-name {
+    font-size: 0.95rem;
+}
+
+.backend-status {
+    font-size: 1rem;
+    min-width: 24px;
+    text-align: center;
+}
+
+.backend-status.available {
+    color: #4caf50;
+}
+
+.backend-status.unavailable {
+    color: #f44336;
+}
+
+.backend-info {
+    margin-top: 10px;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.backend-info small {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+#current-model {
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* Chat-Bereich - Angepasst für neues Layout */
 .chat-section {
     display: flex;
     flex-direction: column;
-    height: 600px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    min-height: calc(100vh - 160px);
+    max-height: calc(100vh - 160px);
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
     background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .chat-messages {
@@ -191,6 +803,106 @@ main {
 .welcome-message h3 {
     color: #667eea;
     margin-bottom: 10px;
+}
+
+/* Chat Historie Zusammenfassung */
+.chat-history-summary {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.history-title {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.history-toggle-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.history-toggle-btn:hover {
+    background: #5a6fd6;
+}
+
+.history-content {
+    max-height: 400px;
+    overflow-y: auto;
+    transition: max-height 0.3s ease;
+}
+
+.history-content.collapsed {
+    max-height: 0;
+    overflow: hidden;
+}
+
+.history-qa-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.history-qa-item:last-child {
+    border-bottom: none;
+}
+
+.history-question {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.history-q-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.history-q-text {
+    color: #495057;
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.history-answer {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding-left: 20px;
+}
+
+.history-a-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.history-a-text {
+    color: #6c757d;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    background: #f8f9fa;
+    padding: 6px 10px;
+    border-radius: 4px;
+    flex: 1;
 }
 
 .message {
@@ -216,6 +928,47 @@ main {
     background: #e3f2fd;
     border-left: 4px solid #2196f3;
     margin-left: 0;
+}
+
+/* Streaming-Frage Animation */
+.message.question.streaming {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+
+.message.question.streaming .message-label {
+    color: #2196f3;
+    animation: pulse 1.5s infinite;
+}
+
+.streaming-text {
+    min-height: 20px;
+    white-space: pre-wrap;
+}
+
+.streaming-text .cursor {
+    display: inline-block;
+    color: #2196f3;
+    font-weight: bold;
+    animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
 }
 
 .message.answer {
@@ -310,8 +1063,89 @@ main {
     background: #5a6268;
 }
 
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
 #reset-btn {
     width: 100%;
+}
+
+/* Abgeschlossene Interviews (Multi-Rollen) */
+.completed-interviews-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.completed-interviews-section h3 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.completed-interviews-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+
+.completed-interview-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f0f7ff;
+    border: 1px solid #d0e3ff;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.completed-interview-item:hover {
+    background: #e3f0ff;
+    border-color: #667eea;
+}
+
+.completed-interview-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.completed-interview-role {
+    font-weight: 600;
+    color: #333;
+}
+
+.completed-interview-status {
+    color: #28a745;
+    font-size: 0.9rem;
+}
+
+.completed-interview-progress {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+#new-role-btn {
+    display: none;
+}
+
+#new-role-btn.visible {
+    display: block;
 }
 
 /* Upload-Bereich */
@@ -457,3 +1291,389 @@ footer {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Session-Restore Modal */
+.session-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.session-modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.session-modal-content h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.session-modal-content p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.session-option {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.2s ease;
+}
+
+.session-option:hover {
+    border-color: #667eea;
+    background: #f0f3ff;
+}
+
+.session-option.current {
+    border-color: #667eea;
+    background: #f0f3ff;
+}
+
+.session-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.session-role {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.session-date {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.session-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.progress-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.session-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Multi-Rollen Info im Modal */
+.session-multi-roles {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: #e8f5e9;
+    border-radius: 6px;
+}
+
+.multi-roles-badge {
+    color: #2e7d32;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.completed-roles-list {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.session-actions button {
+    flex: 1;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-continue {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-continue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-delete {
+    background: #fff;
+    color: #e74c3c;
+    border: 1px solid #e74c3c !important;
+}
+
+.btn-delete:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.modal-actions {
+    text-align: center;
+}
+
+.btn-new {
+    background: #28a745;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-new:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+/* Export & Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-export {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-export:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+.btn-export:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Klickbare Interview-Items */
+.completed-interview-item.clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid transparent;
+}
+
+.completed-interview-item.clickable:hover {
+    background: #e8f4fd;
+    border-color: #667eea;
+    transform: translateX(4px);
+}
+
+.completed-interview-item.current-interview {
+    background: linear-gradient(135deg, #e8f4fd 0%, #f0e6ff 100%);
+    border: 2px solid #667eea;
+}
+
+.completed-interview-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-switch {
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-switch:hover {
+    background: #764ba2;
+    transform: scale(1.1);
+}
+
+/* Theme-Label in Chat */
+.theme-label {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+}
+
+/* Rollen-Auswahl */
+.role-selection {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    padding: 25px;
+    border-radius: 12px;
+    margin: 15px;
+    text-align: center;
+}
+
+.role-selection h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.role-selection p {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.role-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.role-btn {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 120px;
+}
+
+.role-btn:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.role-btn .role-icon {
+    font-size: 1.5rem;
+}
+
+.role-btn .role-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.85rem;
+}
+
+.role-btn .role-desc {
+    display: none;
+}
+
+.role-btn[data-role="auto"] {
+    border-style: dashed;
+}
+
+.role-btn[data-role="auto"]:hover {
+    border-style: solid;
+}
+
+/* Button Utilities */
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .interview-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar-left {
+        position: relative;
+        max-height: none;
+        overflow: visible;
+    }
+    
+    .chat-section {
+        min-height: 500px;
+        max-height: none;
+    }
+}
+

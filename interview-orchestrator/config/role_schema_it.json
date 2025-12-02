@@ -1,0 +1,175 @@
+{
+  "role": "it",
+  "role_name": "IT-Verantwortliche / Systemadministration",
+  "role_description": "Technische Abläufe, Systeme, Schnittstellen, Probleme verstehen",
+  "documentation_goals": [
+    "Aufgabenbereich & Verantwortung",
+    "Technische Systeme & Tools",
+    "Sicherheits- & Compliance-Anforderungen",
+    "Systemarchitektur & Schnittstellen",
+    "IT-seitige Hürden & Risiken"
+  ],
+  "fields": {
+    "themenfeld_a_allgemein": {
+      "name": "Allgemeine Fragen",
+      "fields": {
+        "position": {
+          "question": "Welche Position haben Sie in der IT-Abteilung?",
+          "type": "text",
+          "required": true,
+          "hint": "Klärung der Expertise und des Verantwortungsbereichs"
+        },
+        "berufserfahrung_it": {
+          "question": "Seit wie vielen Jahren arbeiten Sie im IT-Bereich, speziell in dieser Organisation?",
+          "type": "number",
+          "unit": "Jahre",
+          "required": true,
+          "hint": "Schätzung der Systemkenntnis und Zuverlässigkeit der Antworten"
+        },
+        "hauptaufgaben_it": {
+          "question": "Welche Hauptaufgaben gehören zu Ihrem Tätigkeitsbereich?",
+          "type": "multiple_choice",
+          "options": [
+            "Systemadministration & Infrastruktur (Server, Netzwerk)",
+            "Datenbank- & Datenmanagement",
+            "Softwareentwicklung & Integration",
+            "IT-Sicherheit & Compliance",
+            "Technischer Support & Troubleshooting",
+            "Sonstiges"
+          ],
+          "required": true,
+          "hint": "Schnelle Kategorisierung des Tätigkeitsfelds für adaptive Nachfragen"
+        },
+        "relevante_systeme": {
+          "question": "Mit welchen Systemen arbeiten Sie direkt, die in den zu automatisierenden Prozessen eine Rolle spielen?",
+          "type": "text",
+          "required": true,
+          "hint": "Identifikation relevanter Schnittstellen"
+        },
+        "systemkenntnis_selbsteinschaetzung": {
+          "question": "Wie würden Sie Ihre Systemkenntnis der aktuellen Prozesslandschaft einschätzen?",
+          "type": "scale",
+          "scale_min": 1,
+          "scale_max": 5,
+          "scale_labels": {"1": "Geringe Kenntnis", "5": "Tiefe Kenntnis"},
+          "required": true,
+          "hint": "Bewertung der Glaubwürdigkeit für technische Details"
+        }
+      }
+    },
+    "themenfeld_b_systemlandschaft": {
+      "name": "Aktuelle Systemlandschaft & Hardwareausstattung",
+      "fields": {
+        "dms_erp_systeme": {
+          "question": "Welche Systeme verwalten aktuell die dokumentverarbeitenden Prozesse?",
+          "type": "text",
+          "required": true,
+          "hint": "z.B. ERP (SAP, NetSuite), DMS (SharePoint, M-Files), RPA (UiPath, Blue Prism)"
+        },
+        "systeme_integriert": {
+          "question": "Sind diese Systeme miteinander integriert, oder arbeiten Sie mit Daten-Silos?",
+          "type": "choice",
+          "options": ["Ja, integriert", "Nein, Daten-Silos"],
+          "required": true,
+          "hint": "Identifikation von Integrationshürden"
+        },
+        "integrationsschnittstellen": {
+          "question": "Über welche Schnittstellen erfolgt die Integration?",
+          "type": "text",
+          "required": false,
+          "conditional": "systeme_integriert == 'Ja, integriert'"
+        },
+        "datenaustausch_silos": {
+          "question": "Wie werden Daten heute zwischen den Systemen ausgetauscht?",
+          "type": "text",
+          "required": false,
+          "conditional": "systeme_integriert == 'Nein, Daten-Silos'"
+        },
+        "hardware_ausstattung": {
+          "question": "Welche Hardware-Ausstattung ist vorhanden und muss berücksichtigt werden?",
+          "type": "text",
+          "required": true,
+          "hint": "Server-Spezifikationen, Cloud-Infrastruktur (AWS, Azure, On-Premise), Scanner, Netzwerkkapazität"
+        },
+        "performance_skalierbarkeit": {
+          "question": "Wie bewerten Sie die aktuelle Performance und Skalierbarkeit der Systeme?",
+          "type": "text",
+          "required": true
+        }
+      }
+    },
+    "themenfeld_c_datenmanagement": {
+      "name": "Datenmanagement & Datenschutz",
+      "fields": {
+        "dokumentarten_volumen": {
+          "question": "Welche Arten von Dokumenten werden verarbeitet, und wie groß ist das durchschnittliche Datenvolumen?",
+          "type": "text",
+          "required": true,
+          "hint": "Konkrete Mengenangaben für Einschätzung von Speicheranforderungen und Performance"
+        },
+        "compliance_anforderungen": {
+          "question": "Welche Datenschutz- und Compliance-Anforderungen sind zu beachten?",
+          "type": "multiple_choice",
+          "options": [
+            "DSGVO",
+            "Branchenspezifische Vorgaben (z.B. GxP für Pharma, PCI-DSS für Zahlungen)",
+            "Interne Audit-Requirements",
+            "ISO-27001 oder ähnliche Standards",
+            "Revisionssicherheit / GoBD",
+            "Sonstiges"
+          ],
+          "required": true,
+          "hint": "Sicherheitsanforderungen in die Systemarchitektur einplanen"
+        },
+        "identity_management": {
+          "question": "Wie werden Zugriffe und Benutzerrechte derzeit verwaltet (Identity Management)?",
+          "type": "text",
+          "required": true,
+          "hint": "Active Directory, LDAP, Single Sign-On (SSO), rollenbasierte Zugriffskontrolle (RBAC)"
+        }
+      }
+    },
+    "themenfeld_d_automatisierung": {
+      "name": "Automatisierungspotenziale & Systemgrenzen",
+      "fields": {
+        "automatisierbare_schritte": {
+          "question": "Welche Schritte im Dokumentverarbeitungsprozess könnten automatisiert werden?",
+          "type": "text",
+          "required": true,
+          "hint": "Prozessschritte aufzählen: Datenerfassung, Validierung, Datenextraktion, Routing, Speicherung, Benachrichtigungen"
+        },
+        "vorhandene_apis": {
+          "question": "Gibt es bestehende APIs oder Schnittstellen, über die der Fragebogen-Assistent Daten austauschen könnte?",
+          "type": "choice",
+          "options": ["Ja", "Nein"],
+          "required": true,
+          "hint": "Machbarkeit direkter Systemintegration"
+        },
+        "api_spezifikation_verfuegbar": {
+          "question": "Können Sie die API-Spezifikation bereitstellen?",
+          "type": "choice",
+          "options": ["Ja", "Nein"],
+          "required": false,
+          "conditional": "vorhandene_apis == 'Ja'"
+        },
+        "technische_huerden": {
+          "question": "Welche technischen oder Datenschutz-Hürden sehen Sie bei der Automatisierung dieser Prozesse?",
+          "type": "text",
+          "required": true,
+          "hint": "Legacy-Systeme, Schnittstellen-Inkompatibilität, Rechenkapazität, Netzwerkbandbreite, regulatorische Anforderungen"
+        },
+        "dokument_durchlaufzeit": {
+          "question": "Wie lange dauert die typische Durchlaufzeit eines Dokumentes durch den aktuellen Prozess (mit Rückfragen)?",
+          "type": "number",
+          "unit": "Stunden/Tage",
+          "required": true,
+          "hint": "Baseline für Effektivitätsmessung"
+        }
+      }
+    }
+  },
+  "completion_criteria": {
+    "minimum_required_fields": 12,
+    "required_themes": ["themenfeld_a_allgemein", "themenfeld_b_systemlandschaft", "themenfeld_c_datenmanagement"]
+  }
+}

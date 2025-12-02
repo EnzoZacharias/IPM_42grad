@@ -1,0 +1,61 @@
+Vorlage Prozessdokumentation — KI‑Befragungsoutput 
+
+1. Beteiligte & allgemeine Informationen zum Prozess 
+
+Prozessname 
+
+Kurzbeschreibung des Prozesses 
+
+Beteiligte Rollen 
+
+Genutzte Systeme oder Tools 
+
+Prozessziele 
+
+Häufigste Probleme oder Herausforderungen 
+
+2. Rollenspezifische Informationen 
+
+Rollenname 
+
+Rollenaufgabe im Prozess 
+
+Ziele der Rolle 
+
+Schmerzpunkte der Rolle 
+
+Benötigte Informationen oder Entscheidungen 
+
+Rollenspezifische Kernantworten: 
+
+… 
+
+... 
+
+3. Überblick über den Prozessablauf 
+
+Schritte des Hauptprozesses 
+
+Eingaben im Prozess 
+
+Ausgaben im Prozess 
+
+Wichtige Entscheidungspunkte 
+
+Varianten oder Sonderfälle 
+
+4. Potenziale & Chancen 
+
+Automatisierungspotenziale 
+
+Häufige Fehlerquellen 
+
+Verbesserungsideen der Stakeholder 
+
+5. Ergänzende Infos 
+
+Zusatzinformationen 
+
+Offene Fragen 
+
+ 

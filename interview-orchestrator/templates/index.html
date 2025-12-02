@@ -2,44 +2,162 @@
 
 {% block content %}
 <div class="interview-container">
-    <!-- Status-Panel -->
-    <div class="status-panel">
-        <h2>Status</h2>
-        <div class="status-grid">
-            <div class="status-item">
-                <span class="status-label">Phase:</span>
-                <span class="status-value" id="status-phase">Wird geladen...</span>
+    <!-- Linke Sidebar - Kompakt -->
+    <div class="sidebar-left">
+        <!-- Status Card - Kompakt -->
+        <div class="card card-status">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>📊 Status</h3>
+                <span class="card-toggle">▼</span>
             </div>
-            <div class="status-item">
-                <span class="status-label">Rolle:</span>
-                <span class="status-value" id="status-role">Undefiniert</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Beantwortete Fragen:</span>
-                <span class="status-value" id="status-questions">0</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Hochgeladene Dateien:</span>
-                <span class="status-value" id="status-files">0</span>
+            <div class="card-body">
+                <div class="status-grid-compact">
+                    <div class="status-row">
+                        <span class="status-label">Phase</span>
+                        <span class="status-value" id="status-phase">Laden...</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label">Rolle</span>
+                        <span class="status-value" id="status-role">-</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label">Fragen</span>
+                        <span class="status-value" id="status-questions">0</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label">Dateien</span>
+                        <span class="status-value" id="status-files">0</span>
+                    </div>
+                </div>
             </div>
         </div>
-        <button id="reset-btn" class="btn btn-secondary">Neu starten</button>
-        
+
+        <!-- Fortschritt Card -->
+        <div class="card card-progress">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>📈 Fortschritt</h3>
+                <span class="card-toggle">▼</span>
+            </div>
+            <div class="card-body" id="progress-section">
+                <div class="progress-compact">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span id="progress-text" class="progress-percent">0%</span>
+                        <span id="progress-detail" class="progress-fields">0/0</span>
+                    </div>
+                </div>
+                
+                <!-- Themenfelder - Kompakt -->
+                <div class="themes-progress" id="themes-progress" style="display: none;">
+                    <ul id="themes-list" class="themes-list-compact"></ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Abgeschlossene Interviews -->
+        <div class="card card-interviews collapsed" id="completed-interviews-section" style="display: none;">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>📋 Interviews</h3>
+                <span class="card-toggle">▶</span>
+            </div>
+            <div class="card-body" style="display: none;">
+                <ul id="completed-interviews-list" class="completed-list-compact"></ul>
+                <button id="new-role-btn" class="btn btn-sm btn-success">+ Neue Rolle</button>
+            </div>
+        </div>
+
+        <!-- Dokument-Upload - In Sidebar verschoben -->
+        <div class="card card-upload collapsed">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>📁 Dokumente</h3>
+                <span class="card-toggle">▶</span>
+            </div>
+            <div class="card-body" style="display: none;">
+                <div class="upload-area-compact" id="upload-area">
+                    <input type="file" id="file-input" multiple hidden>
+                    <button id="select-files-btn" class="btn btn-sm btn-secondary">📎 Dateien wählen</button>
+                </div>
+                <div class="files-section" id="uploaded-files">
+                    <ul id="files-list" class="files-list-compact"></ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- LLM Backend - Minimiert -->
+        <div class="card card-backend collapsed">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3>⚙️ LLM</h3>
+                <span class="card-toggle">▶</span>
+            </div>
+            <div class="card-body" style="display: none;">
+                <div class="backend-options">
+                    <label class="backend-option-compact">
+                        <input type="radio" name="llm-backend" value="local" checked>
+                        <span>Lokal</span>
+                        <span class="backend-status" id="local-status">⏳</span>
+                    </label>
+                    <label class="backend-option-compact">
+                        <input type="radio" name="llm-backend" value="mistral_api">
+                        <span>API</span>
+                        <span class="backend-status" id="api-status">⏳</span>
+                    </label>
+                </div>
+                <small class="model-info">Modell: <span id="current-model">-</span></small>
+            </div>
+        </div>
+
+        <!-- Aktionen -->
+        <div class="action-buttons-compact">
+            <button id="export-pdf-btn" class="btn btn-export-compact" title="PDF herunterladen">
+                📄 PDF
+            </button>
+            <button id="reset-btn" class="btn btn-reset-compact" title="Neu starten">
+                🔄 Reset
+            </button>
+        </div>
+
         <!-- Prozess-Aktivität -->
-        <div class="process-activity" id="process-activity" style="display: none;">
-            <div class="process-header">Aktuelle Aktivität</div>
-            <div class="process-message" id="process-message"></div>
-            <div class="process-spinner"></div>
+        <div class="process-activity-compact" id="process-activity" style="display: none;">
+            <div class="process-indicator">
+                <div class="process-spinner-small"></div>
+                <span id="process-message">Verarbeite...</span>
+            </div>
         </div>
     </div>
 
-    <!-- Chat-Bereich -->
+    <!-- Haupt-Chat-Bereich - Breiter -->
     <div class="chat-section">
         <div class="chat-messages" id="chat-messages">
             <div class="welcome-message">
-                <h3>Willkommen!</h3>
+                <h3>👋 Willkommen!</h3>
                 <p>Ich helfe Ihnen dabei, Ihre Geschäftsprozesse zu dokumentieren.</p>
                 <p>Bitte beantworten Sie die folgenden Fragen so detailliert wie möglich.</p>
+            </div>
+        </div>
+        
+        <!-- Rollen-Auswahl für neues Interview -->
+        <div class="role-selection" id="role-selection" style="display: none;">
+            <h3>🎯 Interview-Modus wählen</h3>
+            <p>Wählen Sie die Rolle der zu befragenden Person:</p>
+            <div class="role-buttons">
+                <button class="role-btn" data-role="auto">
+                    <span class="role-icon">🔄</span>
+                    <span class="role-name">Automatisch</span>
+                </button>
+                <button class="role-btn" data-role="fach">
+                    <span class="role-icon">👷</span>
+                    <span class="role-name">Fachabteilung</span>
+                </button>
+                <button class="role-btn" data-role="it">
+                    <span class="role-icon">💻</span>
+                    <span class="role-name">IT</span>
+                </button>
+                <button class="role-btn" data-role="management">
+                    <span class="role-icon">📊</span>
+                    <span class="role-name">Management</span>
+                </button>
             </div>
         </div>
         
@@ -55,19 +173,23 @@
             </div>
         </div>
     </div>
-
-    <!-- Dokument-Upload -->
-    <div class="upload-section">
-        <h2>Dokumente hochladen</h2>
-        <div class="upload-area" id="upload-area">
-            <input type="file" id="file-input" multiple hidden>
-            <p class="upload-text">Dateien hier ablegen oder klicken zum Auswählen</p>
-            <button id="select-files-btn" class="btn btn-secondary">Dateien auswählen</button>
-        </div>
-        <div class="uploaded-files" id="uploaded-files">
-            <h3>Hochgeladene Dateien:</h3>
-            <ul id="files-list" class="files-list"></ul>
-        </div>
-    </div>
 </div>
+
+<script>
+function toggleCard(header) {
+    const card = header.parentElement;
+    const body = card.querySelector('.card-body');
+    const toggle = header.querySelector('.card-toggle');
+    
+    if (body.style.display === 'none') {
+        body.style.display = 'block';
+        toggle.textContent = '▼';
+        card.classList.remove('collapsed');
+    } else {
+        body.style.display = 'none';
+        toggle.textContent = '▶';
+        card.classList.add('collapsed');
+    }
+}
+</script>
 {% endblock %}

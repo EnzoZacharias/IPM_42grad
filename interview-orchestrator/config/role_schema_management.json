@@ -1,0 +1,187 @@
+{
+  "role": "management",
+  "role_name": "Management / Führungskräfte",
+  "role_description": "Überblick, Ziele, Prioritäten, Risiken, wirtschaftliche Aspekte",
+  "documentation_goals": [
+    "Aufgabenbereich & strategische Verantwortung",
+    "Geschäftliche Ziele & KPIs",
+    "Prozess-Schmerzpunkte & Ineffizienzen",
+    "Stakeholder & Betroffene",
+    "Budget, Priorisierung & Geschäftsfall"
+  ],
+  "fields": {
+    "themenfeld_a_allgemein": {
+      "name": "Allgemeine Fragen",
+      "fields": {
+        "position": {
+          "question": "Welche Management-Position haben Sie?",
+          "type": "text",
+          "required": true,
+          "hint": "Kontextualisierung der Entscheidungsebene"
+        },
+        "verantwortungsbereiche": {
+          "question": "Für welche Geschäftsbereiche oder Teams sind Sie verantwortlich?",
+          "type": "text",
+          "required": true,
+          "hint": "Scope der Verantwortung"
+        },
+        "leitung_dauer": {
+          "question": "Wie lange leiten Sie bereits diesen Bereich?",
+          "type": "number",
+          "unit": "Jahre/Monate",
+          "required": true,
+          "hint": "Schätzung der Prozesskenntnis"
+        },
+        "primaerer_fokus": {
+          "question": "Was ist Ihr primärer Fokus?",
+          "type": "ranking",
+          "options": [
+            "Kostenreduktion",
+            "Qualitätsverbesserung",
+            "Compliance",
+            "Mitarbeiterzufriedenheit"
+          ],
+          "required": true,
+          "hint": "Klärung der strategischen Prioritäten - bitte in Rangfolge"
+        },
+        "effizienz_zufriedenheit": {
+          "question": "Wie zufrieden sind Sie aktuell mit der Effizienz der Dokumentverarbeitungsprozesse?",
+          "type": "scale",
+          "scale_min": 1,
+          "scale_max": 5,
+          "scale_labels": {"1": "Sehr unzufrieden", "5": "Sehr zufrieden"},
+          "required": true,
+          "hint": "Baseline für Verbesserungserwartungen"
+        },
+        "optimierung_anlass": {
+          "question": "Was ist der Anlass oder Trigger für die Optimierung/Automatisierung dieses Prozesses?",
+          "type": "text",
+          "required": true
+        }
+      }
+    },
+    "themenfeld_b_ziele_performance": {
+      "name": "Geschäftliche Ziele & Performance",
+      "fields": {
+        "aktuelle_probleme": {
+          "question": "Welche konkreten Probleme oder Ineffizienzen erleben Sie aktuell in der Dokumentverarbeitung?",
+          "type": "multiple_choice",
+          "options": [
+            "Lange Durchlaufzeiten",
+            "Hohe manuelle Aufwände / Personalkosten",
+            "Häufige Fehler oder Nacharbeiten",
+            "Schlechte Transparenz / Nachverfolgung",
+            "Compliance- oder Qualitätsprobleme",
+            "Mitarbeiterverlust aufgrund von Routineaufgaben",
+            "Skalierungsprobleme (Volumen nimmt zu)",
+            "Sonstiges"
+          ],
+          "required": true,
+          "hint": "Identifikation der Geschäftsschmerzpunkte"
+        },
+        "aktuelle_kpis": {
+          "question": "Welche messbaren KPIs verfolgen Sie derzeit für diesen Prozess?",
+          "type": "text",
+          "required": true,
+          "hint": "Auflistung mit aktuellen Werten: Durchlaufzeit (Tage), Fehlerquote (%), Personenkosten (€/Dokument), Compliance-Vorfälle"
+        },
+        "erwartete_verbesserungen": {
+          "question": "Welche Verbesserungen erwarten Sie von einer Automatisierung?",
+          "type": "text",
+          "required": true,
+          "hint": "Prozentuale oder absolute Ziele: z.B. 'Durchlaufzeit um 50% reduzieren', 'Fehlerquote unter 2%', 'Kostenreduktion von 30%'"
+        }
+      }
+    },
+    "themenfeld_c_kosten_budget": {
+      "name": "Kostenbewusstsein & Budget",
+      "fields": {
+        "beteiligte_personen": {
+          "question": "Wie viele Personen sind derzeit mit diesem Prozess beschäftigt, und welche Rollen?",
+          "type": "text",
+          "required": true,
+          "hint": "Anzahl pro Rolle - Kalkulation von Personalkostenersparnis"
+        },
+        "budget_verfuegbar": {
+          "question": "Welches Budget haben Sie verfügbar für Automatisierungs- oder Optimierungsprojekte?",
+          "type": "number",
+          "unit": "Euro",
+          "required": false,
+          "hint": "Realistische Zieldefinition"
+        },
+        "kostenneutral_erforderlich": {
+          "question": "Müssen wir kostenneutral arbeiten?",
+          "type": "choice",
+          "options": ["Ja", "Nein"],
+          "required": true
+        },
+        "implementierungspriorität": {
+          "question": "Wie ist Ihre Priorität: schnelle Implementierung (Tage/Wochen) vs. umfassende Lösung (Monate)?",
+          "type": "scale",
+          "scale_min": 1,
+          "scale_max": 5,
+          "scale_labels": {"1": "Schnelle Implementierung", "5": "Umfassende Lösung"},
+          "required": true,
+          "hint": "Zeitmanagement und Scope-Definition"
+        }
+      }
+    },
+    "themenfeld_d_stakeholder_akzeptanz": {
+      "name": "Stakeholder & Akzeptanz",
+      "fields": {
+        "hauptnutzer": {
+          "question": "Wer sind die Hauptnutzer dieses Prozesses?",
+          "type": "text",
+          "required": true,
+          "hint": "Liste von Abteilungen/Rollen: Fachabteilung, externe Partner"
+        },
+        "fachabteilung_einstellung": {
+          "question": "Wie steht Ihre Fachabteilung einer Automatisierung gegenüber?",
+          "type": "scale",
+          "scale_min": 1,
+          "scale_max": 5,
+          "scale_labels": {"1": "Skeptisch", "5": "Begeistert"},
+          "required": true,
+          "hint": "Change-Management-Anforderungen erkennen"
+        },
+        "bedenken_widerstaende": {
+          "question": "Welche Bedenken oder Widerstände erwarten Sie?",
+          "type": "text",
+          "required": false,
+          "conditional": "fachabteilung_einstellung < 3"
+        },
+        "compliance_vorgaben": {
+          "question": "Sind externe Compliance-Vorgaben oder Audits zu beachten?",
+          "type": "choice",
+          "options": ["Ja", "Nein"],
+          "required": true,
+          "hint": "Regulatory requirements in die Lösung integrieren"
+        },
+        "compliance_anforderungen_detail": {
+          "question": "Welche Compliance-Anforderungen müssen beachtet werden?",
+          "type": "text",
+          "required": false,
+          "conditional": "compliance_vorgaben == 'Ja'"
+        },
+        "wichtigste_aspekte": {
+          "question": "Welche Aspekte sind für Sie bei einer Automatisierungslösung am wichtigsten?",
+          "type": "ranking",
+          "options": [
+            "Robustheit / Fehlerfreiheit",
+            "Benutzerfreundlichkeit",
+            "Transparenz (Nachverfolgbarkeit)",
+            "Schnelle Amortisation",
+            "Skalierbarkeit",
+            "Einfache Wartung"
+          ],
+          "required": true,
+          "hint": "Design-Anforderungen klären - bitte in Rangfolge"
+        }
+      }
+    }
+  },
+  "completion_criteria": {
+    "minimum_required_fields": 12,
+    "required_themes": ["themenfeld_a_allgemein", "themenfeld_b_ziele_performance", "themenfeld_d_stakeholder_akzeptanz"]
+  }
+}

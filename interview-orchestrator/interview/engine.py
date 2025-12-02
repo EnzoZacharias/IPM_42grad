@@ -2,6 +2,7 @@ from typing import Dict, Any, Optional, List
 from interview.repo import QuestionRepo
 from interview.role_classifier import RoleClassifier
 from interview.question_generator import DynamicQuestionGenerator
+from interview.role_schema_manager import RoleSchemaManager, get_schema_manager
 
 PHASE_INTAKE = "intake"
 PHASE_ROLE = "role_specific"
@@ -14,7 +15,8 @@ class InterviewEngine:
         question_generator: Optional[DynamicQuestionGenerator] = None,
         use_dynamic_questions: bool = True,
         demo_mode: bool = False,
-        rag_system = None
+        rag_system = None,
+        schema_manager: Optional[RoleSchemaManager] = None
     ):
         self.repo = repo
         self.classifier = classifier
@@ -22,6 +24,7 @@ class InterviewEngine:
         self.use_dynamic_questions = use_dynamic_questions and question_generator is not None
         self.demo_mode = demo_mode
         self.rag_system = rag_system  # RAG-System für kontextbasierte Fragen
+        self.schema_manager = schema_manager or get_schema_manager()
 
     def _unanswered(self, questions, answers):
         for q in questions:
@@ -136,116 +139,420 @@ class InterviewEngine:
     
     def _next_dynamic_intake_question(self, session: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Generiert genau 9 allgemeine Intake-Fragen dynamisch mit LLM.
-        Nach diesen 9 Fragen erfolgt die Rollenklassifikation.
+        Generiert Intake-Fragen dynamisch einzeln mit LLM.
+        Jede Frage wird basierend auf den vorherigen Antworten angepasst.
         """
         answers = session.get("answers", {})
         asked_questions = session.setdefault("intake_questions", [])
         
-        # Erste 9 Fragen generieren (falls noch keine gestellt wurden)
-        if not asked_questions:
-            print("\n🤖 Generiere 9 allgemeine Einstiegsfragen mit KI...")
-            
-            # Generiere Dokument-Zusammenfassung falls verfügbar
-            document_summary = ""
-            if self.rag_system and self.rag_system.is_initialized:
-                print("📚 Generiere Zusammenfassung der hochgeladenen Dokumente...")
-                document_summary = self.rag_system.generate_document_summary(
-                    llm_client=self.question_generator.llm
-                )
-                if document_summary:
-                    print(f"✅ Zusammenfassung erstellt ({len(document_summary)} Zeichen)")
-            
-            initial_questions = self.question_generator.generate_initial_questions(
-                num_questions=9,
-                document_summary=document_summary
-            )
-            print(f"✅ {len(initial_questions)} Fragen generiert")
-            session["intake_questions"] = initial_questions
-            asked_questions = initial_questions
-            print(f"📝 Session intake_questions gesetzt: {len(session.get('intake_questions', []))} Fragen")
-            
-            if asked_questions:
-                return asked_questions[0]
+        # Berechne wie viele Fragen bereits beantwortet wurden
+        answered_count = len([q for q in asked_questions if q.get("id") in answers])
         
-        # Prüfe ob es noch unbeantwortete Fragen gibt
+        # Prüfe ob es noch eine unbeantwortete Frage gibt
         unanswered = self._unanswered(asked_questions, answers)
         if unanswered:
             return unanswered
         
-        # Alle 9 Fragen beantwortet → Intake-Phase ist abgeschlossen
+        # Alle bisherigen Fragen beantwortet - generiere nächste Frage
+        next_index = len(asked_questions)
+        
+        # Maximal 9 Intake-Fragen
+        if next_index >= 9:
+            print(f"\n✅ Alle {len(asked_questions)} allgemeinen Fragen beantwortet")
+            return None
+        
+        print(f"\n🤖 Generiere Intake-Frage #{next_index + 1} dynamisch mit KI...")
+        
+        # Intake-Fragen werden OHNE Dokumenten-Kontext generiert
+        # um neutrale, allgemeine Fragen zu stellen
+        question = self.question_generator.generate_single_intake_question(
+            question_index=next_index,
+            answers=answers,
+            previous_questions=asked_questions,
+            document_summary=""  # Kein Dokumenten-Kontext für Intake
+        )
+        
+        if question:
+            asked_questions.append(question)
+            session["intake_questions"] = asked_questions
+            print(f"✅ Frage #{next_index + 1} generiert: {question.get('text', '')[:50]}...")
+            return question
+        
+        # Fallback: Alle Fragen beantwortet
         print(f"\n✅ Alle {len(asked_questions)} allgemeinen Fragen beantwortet")
         return None
     
+    def next_question_stream(self, session: Dict[str, Any]):
+        """
+        Generator-Variante von next_question für Streaming.
+        Yielded Text-Chunks während der Fragen-Generierung.
+        
+        Yields:
+            Entweder Text-Chunks (str) oder das finale Ergebnis (dict mit 'question' key)
+        """
+        phase = session.get("phase", PHASE_INTAKE)
+        answers = session.setdefault("answers", {})
+        
+        # Phase 0: Universal Intake mit Streaming
+        if phase == PHASE_INTAKE:
+            if self.use_dynamic_questions:
+                # Prüfe ob es noch eine unbeantwortete Frage gibt
+                asked_questions = session.get("intake_questions", [])
+                unanswered = self._unanswered(asked_questions, answers)
+                if unanswered:
+                    yield {"question": unanswered, "done": True}
+                    return
+                
+                next_index = len(asked_questions)
+                
+                # Alle 9 Fragen beantwortet?
+                if next_index >= 9:
+                    # Rollenklassifikation durchführen (kein Streaming nötig)
+                    yield {"status": "Analysiere Antworten und klassifiziere Rolle..."}
+                    result = self._perform_role_classification(session)
+                    yield result
+                    return
+                
+                # Generiere nächste Frage mit Streaming
+                yield {"status": f"Generiere Frage {next_index + 1}/9..."}
+                
+                # Hole Dokument-Zusammenfassung
+                asked_questions = session.setdefault("intake_questions", [])
+                
+                # Intake-Fragen werden OHNE Dokumenten-Kontext generiert (Streaming)
+                # um neutrale, allgemeine Fragen zu stellen
+                for chunk in self.question_generator.generate_single_intake_question_stream(
+                    question_index=next_index,
+                    answers=answers,
+                    previous_questions=asked_questions,
+                    document_summary=""  # Kein Dokumenten-Kontext für Intake
+                ):
+                    if isinstance(chunk, dict) and chunk.get("__complete__"):
+                        question = chunk.get("question")
+                        if question:
+                            asked_questions.append(question)
+                            session["intake_questions"] = asked_questions
+                        yield {"question": question, "done": True}
+                        return
+                    else:
+                        yield {"chunk": chunk}
+                
+                return
+            else:
+                # Fallback: Statische Fragen
+                q = self._unanswered(self.repo.universal(), answers)
+                if q:
+                    yield {"question": q, "done": True}
+                    return
+                
+                # Rollenklassifikation
+                result = self._perform_role_classification(session)
+                yield result
+                return
+        
+        # Phase 1: Rollenspezifische Fragen
+        if session.get("phase") == PHASE_ROLE and session.get("role"):
+            if self.use_dynamic_questions:
+                question = self._next_dynamic_role_question(session)
+                yield {"question": question, "done": True}
+            else:
+                rq = self._unanswered(self.repo.by_role(session["role"]), answers)
+                yield {"question": rq, "done": True}
+            return
+        
+        yield {"question": None, "done": True}
+    
+    def _perform_role_classification(self, session: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Führt die Rollenklassifikation durch und gibt das Ergebnis zurück.
+        """
+        answers = session.get("answers", {})
+        
+        print(f"\n{'='*70}")
+        print("🎯 Starte Rollenklassifikation")
+        print(f"{'='*70}")
+        
+        result = self.classifier.classify(answers)
+        
+        session["role_candidates"] = result.get("candidates", [])
+        session["classification_explanation"] = result.get("explain", "")
+        
+        top = session["role_candidates"][0] if session["role_candidates"] else None
+        
+        if top and top["score"] >= 0.7:
+            session["role"] = top["role"]
+            session["phase"] = PHASE_ROLE
+            print(f"\n✅ Rolle identifiziert: {top['role']} (Konfidenz: {top['score']:.0%})")
+        else:
+            if top:
+                session["role"] = top["role"]
+                session["role_low_confidence"] = True
+                session["phase"] = PHASE_ROLE
+                print(f"\n🤔 Rolle unsicher identifiziert: {top['role']} (Konfidenz: {top['score']:.0%})")
+            else:
+                session["role"] = "fach"
+                session["role_low_confidence"] = True
+                session["phase"] = PHASE_ROLE
+        
+        if self.demo_mode:
+            print("\n🎬 DEMO-MODUS: Interview endet nach Rollenklassifikation\n")
+            return {"question": None, "done": True, "role_classified": True}
+        
+        # Hole erste rollenspezifische Frage
+        if self.use_dynamic_questions:
+            question = self._next_dynamic_role_question(session)
+        else:
+            question = self._unanswered(self.repo.by_role(session["role"]), answers)
+        
+        return {"question": question, "done": True, "role_classified": True}
+    
     def _next_dynamic_role_question(self, session: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Generiert rollenspezifische Folgefragen dynamisch mit LLM.
+        Generiert rollenspezifische Folgefragen basierend auf dem Schema.
+        Nutzt die JSON-Schemas für strukturierte, vollständige Interviews.
         """
         answers = session.get("answers", {})
         role = session.get("role")
         role_questions = session.setdefault("role_questions", [])
+        filled_fields = session.setdefault("schema_fields", {})
         
         # Prüfe ob es noch unbeantwortete rollenspezifische Fragen gibt
         unanswered = self._unanswered(role_questions, answers)
         if unanswered:
             return unanswered
         
-        # Generiere nächste rollenspezifische Frage
-        question_number = len(role_questions) + 1
+        # Berechne und zeige Fortschritt
+        progress = self.schema_manager.calculate_progress(role, filled_fields)
         
-        # Maximal max_role_questions
-        if question_number > self.question_generator.max_role_questions:
-            print(f"\n✅ Rollenspezifische Phase abgeschlossen ({len(role_questions)} Fragen für Rolle '{role}')")
+        # Zeige Fortschritt im Log
+        print(f"\n📊 Schema-Fortschritt für '{role}':")
+        print(f"   Ausgefüllt: {progress['filled_fields']}/{progress['total_fields']} ({progress['progress_percent']}%)")
+        print(f"   Pflichtfelder: {progress['filled_required']}/{progress['required_fields']}")
+        
+        # Prüfe ob Interview abgeschlossen ist
+        if progress["is_complete"]:
+            print(f"\n🎉 Interview für Rolle '{role}' vollständig abgeschlossen!")
+            print(self.schema_manager.get_progress_display(role, filled_fields))
             return None
         
-        print(f"\n🤖 Generiere rollenspezifische Frage #{question_number} für Rolle '{role}'...")
+        # Generiere nächste Frage basierend auf Schema
+        question_number = len(role_questions) + 1
         
-        # Hole RAG-Kontext für rollenspezifische Frage
+        # Sicherheitscheck: Maximale Fragenanzahl
+        if question_number > self.question_generator.max_role_questions:
+            print(f"\n⚠️  Maximale Fragenanzahl erreicht ({question_number})")
+            print(f"   Noch fehlende Felder: {progress['missing_required']}")
+            return None
+        
+        print(f"\n🤖 Generiere schema-basierte Frage #{question_number} für Rolle '{role}'...")
+        
+        # RAG-Kontext ist OPTIONAL und wird nur für spezifische technische Themen geholt
+        # um die Fragen nicht zu stark durch Dokumenten-Inhalte zu beeinflussen
         rag_context = ""
-        if self.rag_system and self.rag_system.is_initialized:
-            # Erstelle kontextbezogene Suchanfrage basierend auf:
-            # 1. Der Rolle
-            # 2. Der letzten Frage (falls vorhanden)
-            # 3. Der letzten Antwort (falls vorhanden)
-            
-            # Baue Suchquery aus bisherigem Kontext
-            query_parts = [role, "Aufgaben", "Prozesse", "Verantwortlichkeiten"]
-            
-            # Füge letzte Frage hinzu für Kontext
-            if role_questions:
-                last_question = role_questions[-1]
-                last_question_text = last_question.get('text', '')
-                if last_question_text:
-                    query_parts.append(last_question_text[:100])  # Erste 100 Zeichen
-                
-                # Füge letzte Antwort hinzu für spezifischeren Kontext
-                last_question_id = last_question.get('id')
-                if last_question_id and last_question_id in answers:
-                    last_answer = answers[last_question_id]
-                    if last_answer:
-                        query_parts.append(last_answer[:150])  # Erste 150 Zeichen
-            
-            role_query = " ".join(query_parts)
-            print(f"📚 Hole kontextspezifischen RAG-Kontext...")
-            print(f"   Query basiert auf: Rolle, letzte Frage & Antwort")
-            rag_context = self.rag_system.get_context_for_question(role_query)
+        next_field = self.schema_manager.get_next_unanswered_field(role, filled_fields)
         
-        role_question = self.question_generator.generate_role_specific_question(
+        # Schlüsselwörter für Themen, bei denen RAG-Kontext sinnvoll ist
+        # (technische Details, Systeminfos, Datenmanagement, Automatisierung)
+        rag_keywords = ["systemlandschaft", "datenmanagement", "automatisierung", "schnittstellen", 
+                        "architektur", "technical", "system", "integration", "security", "compliance"]
+        
+        if next_field and self.rag_system and self.rag_system.is_initialized:
+            field_id, field_def = next_field
+            theme_id = field_def.get("theme_id", "").lower()
+            hint = field_def.get("hint", "").lower()
+            
+            # RAG nur für technische/spezifische Themen verwenden
+            # Prüfe ob Theme-ID oder Hint eines der RAG-relevanten Schlüsselwörter enthält
+            use_rag_for_field = any(kw in theme_id or kw in hint for kw in rag_keywords)
+            
+            if use_rag_for_field:
+                query_parts = [
+                    role, 
+                    field_def.get("theme_name", ""),
+                    field_def.get("question", "")[:100]
+                ]
+                role_query = " ".join(query_parts)
+                print(f"📚 Hole RAG-Kontext für technisches Thema: {field_def.get('theme_name', 'Allgemein')}")
+                rag_context = self.rag_system.get_context_for_question(role_query)
+            else:
+                print(f"ℹ️  Kein RAG-Kontext für Thema '{field_def.get('theme_name', '')}' (Interview-basiert)")
+        
+        # Generiere Frage basierend auf Schema
+        role_question = self.question_generator.generate_schema_based_question(
             role=role,
+            filled_fields=filled_fields,
             answers=answers,
-            previous_questions=role_questions,
-            question_number=question_number,
             document_context=rag_context
         )
         
         if role_question:
             role_questions.append(role_question)
             session["role_questions"] = role_questions
+            
+            # Zeige aktuelles Themenfeld
+            theme_name = role_question.get("theme_name", "Allgemein")
+            print(f"   Themenfeld: {theme_name}")
+            print(f"   Feld: {role_question.get('field_id', 'unknown')}")
+            
             return role_question
         
         # Keine weitere Frage nötig
         print(f"\n✅ Rollenspezifische Phase abgeschlossen ({len(role_questions)} Fragen für Rolle '{role}')")
+        print(self.schema_manager.get_progress_display(role, filled_fields))
         return None
+    
+    def process_role_answer(
+        self, 
+        session: Dict[str, Any], 
+        question: Dict[str, Any], 
+        answer: str
+    ) -> Dict[str, Any]:
+        """
+        Verarbeitet eine Antwort auf eine rollenspezifische Frage.
+        Extrahiert Feldwerte und aktualisiert den Fortschritt.
+        
+        Args:
+            session: Die aktuelle Session
+            question: Die beantwortete Frage
+            answer: Die Antwort des Nutzers
+            
+        Returns:
+            Dictionary mit Fortschritts-Informationen
+        """
+        role = session.get("role")
+        answers = session.setdefault("answers", {})
+        filled_fields = session.setdefault("schema_fields", {})
+        
+        # Speichere Antwort
+        question_id = question.get("id")
+        answers[question_id] = answer
+        
+        # Extrahiere Feldwerte
+        field_id = question.get("field_id")
+        if field_id:
+            # Versuche zusätzliche Felder zu extrahieren
+            extracted = self.question_generator.extract_fields_from_answer(
+                role=role,
+                answer=answer,
+                current_field_id=field_id,
+                filled_fields=filled_fields
+            )
+            
+            # Aktualisiere filled_fields
+            for fid, value in extracted.items():
+                filled_fields[fid] = value
+                print(f"✅ Feld '{fid}' ausgefüllt")
+            
+            session["schema_fields"] = filled_fields
+        
+        # Berechne neuen Fortschritt
+        progress = self.schema_manager.calculate_progress(role, filled_fields)
+        
+        return {
+            "progress": progress,
+            "filled_fields_count": len(filled_fields),
+            "is_complete": progress["is_complete"],
+            "progress_percent": progress["progress_percent"]
+        }
+    
+    def get_interview_progress(self, session: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Gibt den aktuellen Interview-Fortschritt zurück.
+        
+        Returns:
+            Dictionary mit Fortschritts-Informationen für die UI
+        """
+        phase = session.get("phase", PHASE_INTAKE)
+        role = session.get("role")
+        
+        if phase == PHASE_INTAKE:
+            # Intake-Phase: Zähle Fragen
+            intake_questions = session.get("intake_questions", [])
+            answered = len([q for q in intake_questions if q.get("id") in session.get("answers", {})])
+            total = 9  # Feste Anzahl Intake-Fragen
+            
+            return {
+                "phase": "intake",
+                "phase_name": "Einstiegsfragen",
+                "current": answered,
+                "total": total,
+                "progress_percent": round(answered / total * 100, 1) if total > 0 else 0,
+                "is_complete": False,
+                "role": None
+            }
+        
+        elif phase == PHASE_ROLE and role:
+            # Rollenspezifische Phase: Nutze Schema-Fortschritt
+            filled_fields = session.get("schema_fields", {})
+            progress = self.schema_manager.calculate_progress(role, filled_fields)
+            
+            schema = self.schema_manager.get_schema(role)
+            role_name = schema.get("role_name", role) if schema else role
+            
+            return {
+                "phase": "role_specific",
+                "phase_name": f"Rollenspezifische Fragen ({role_name})",
+                "current": progress["filled_required"],
+                "total": progress["required_fields"],
+                "progress_percent": progress["progress_percent"],
+                "is_complete": progress["is_complete"],
+                "role": role,
+                "role_name": role_name,
+                "themes_progress": progress["themes_progress"],
+                "missing_required": progress["missing_required"]
+            }
+        
+        return {
+            "phase": "unknown",
+            "phase_name": "Unbekannt",
+            "current": 0,
+            "total": 0,
+            "progress_percent": 0,
+            "is_complete": False,
+            "role": None
+        }
+    
+    def get_filled_schema(self, session: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Gibt das ausgefüllte Schema für die aktuelle Rolle zurück.
+        Nützlich für Export und Dokumentation.
+        """
+        role = session.get("role")
+        filled_fields = session.get("schema_fields", {})
+        
+        if not role:
+            return {}
+        
+        schema = self.schema_manager.get_schema(role)
+        if not schema:
+            return {}
+        
+        # Erstelle strukturiertes Ergebnis
+        result = {
+            "role": role,
+            "role_name": schema.get("role_name", role),
+            "completed_at": None,  # Kann später mit Timestamp gefüllt werden
+            "themes": {}
+        }
+        
+        for theme_id, theme_data in schema.get("fields", {}).items():
+            theme_result = {
+                "name": theme_data.get("name", theme_id),
+                "fields": {}
+            }
+            
+            for field_id, field_def in theme_data.get("fields", {}).items():
+                theme_result["fields"][field_id] = {
+                    "question": field_def.get("question", ""),
+                    "value": filled_fields.get(field_id, None),
+                    "type": field_def.get("type", "text"),
+                    "required": field_def.get("required", False),
+                    "is_filled": field_id in filled_fields
+                }
+            
+            result["themes"][theme_id] = theme_result
+        
+        return result
     
     def _generate_clarifying_question(self, session: Dict[str, Any], top_candidate: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """

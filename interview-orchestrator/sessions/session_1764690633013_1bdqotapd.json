@@ -1,0 +1,318 @@
+{
+  "phase": "role_specific",
+  "answers": {
+    "role_function": "management",
+    "tasks_responsibility": "management",
+    "process_goals": "management",
+    "problems_challenges": "management",
+    "collaboration": "management",
+    "success_measurement": "management",
+    "operational_decisions": "management",
+    "technical_responsibility": "kpi",
+    "project_leadership": "management"
+  },
+  "role": "management",
+  "intake_questions": [
+    {
+      "id": "role_function",
+      "text": "Könnten Sie mir mehr darüber erzählen, welche Aufgabe oder Rolle Sie in Ihrem Unternehmen übernehmen?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "tasks_responsibility",
+      "text": "Kannst du genauer beschreiben, was genau zu deinen täglichen Aufgaben gehört und welche Bereiche du dabei überwachst?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "process_goals",
+      "text": "Welche Zieldimensionen möchten Sie im Rahmen Ihrer Arbeit erreichen?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "problems_challenges",
+      "text": "Können Sie mir erzählen, welche Schwierigkeiten oder Hindernisse Ihnen bei der Erreichung Ihrer Ziele begegnen?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "collaboration",
+      "text": "Könnten Sie mir mehr über die Menschen erzählen, mit denen Sie in Ihrem Arbeitsalltag regelmäßig interagieren?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "success_measurement",
+      "text": "Wie stellen Sie fest, dass Ihre Bemühungen erfolgreich sind?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "operational_decisions",
+      "text": "Kannst du mir beschreiben, wie du in deinem Alltag Entscheidungen triffst und welche Faktoren dabei eine Rolle spielen?",
+      "type": "choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    },
+    {
+      "id": "technical_responsibility",
+      "text": "Könnten Sie mir erzählen, inwiefern technische Systeme oder deren Betreuung in Ihren Aufgabenbereich fallen?",
+      "type": "choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    },
+    {
+      "id": "project_leadership",
+      "text": "Können Sie mir mehr darüber erzählen, wie Sie mit anderen zusammenarbeiten und wie Ihre Rolle dabei aussieht?",
+      "type": "choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    }
+  ],
+  "role_questions": [
+    {
+      "id": "schema_position",
+      "field_id": "position",
+      "text": "In welcher Management-Rolle arbeiten Sie derzeit?",
+      "type": "text",
+      "required": true,
+      "theme_id": "themenfeld_a_allgemein",
+      "theme_name": "Allgemeine Fragen",
+      "hint": "Kontextualisierung der Entscheidungsebene",
+      "original_question": "Welche Management-Position haben Sie?"
+    }
+  ],
+  "schema_fields": {},
+  "uploaded_files": [
+    {
+      "filename": "Fachabteilung_Rolle_Prozessdokumentation.txt",
+      "filepath": "uploads\\Fachabteilung_Rolle_Prozessdokumentation.txt",
+      "size": 11955
+    },
+    {
+      "filename": "IT_Rolle_Prozessdokumentation.txt",
+      "filepath": "uploads\\IT_Rolle_Prozessdokumentation.txt",
+      "size": 6291
+    },
+    {
+      "filename": "Management_Rolle_Prozessdokumentation.txt",
+      "filepath": "uploads\\Management_Rolle_Prozessdokumentation.txt",
+      "size": 8967
+    }
+  ],
+  "completed_interviews": [
+    {
+      "role": "it",
+      "role_label": "IT",
+      "answers": {
+        "role_function": "Server",
+        "tasks_responsibility": "server",
+        "process_goals": "serve",
+        "problems_challenges": "server",
+        "collaboration": "server",
+        "success_measurement": "server",
+        "operational_decisions": "server",
+        "technical_responsibility": "server",
+        "project_leadership": "server",
+        "schema_position": "alle aufgaben",
+        "schema_berufserfahrung_it": "zehn jahre"
+      },
+      "schema_fields": {
+        "position": "alle aufgaben",
+        "berufserfahrung_it": "zehn jahre"
+      },
+      "intake_questions": [
+        {
+          "id": "role_function",
+          "text": "Könnten Sie mir bitte mehr darüber erzählen, wie Sie in Ihrem Unternehmen arbeiten und was Ihre Aufgaben dort sind?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "tasks_responsibility",
+          "text": "Können Sie mir genauer beschreiben, welche Tätigkeiten im Zusammenhang mit den Servern zu Ihrem Aufgabengebiet gehören?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "process_goals",
+          "text": "Welche Ziele verfolgen Sie bei Ihrer Arbeit mit den Servern?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "problems_challenges",
+          "text": "Können Sie mir mehr darüber erzählen, welche Schwierigkeiten oder Hindernisse Ihnen bei der Verwaltung der Server begegnen?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "collaboration",
+          "text": "Mit wem arbeiten Sie zusammen, um die Server zu verwalten?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "success_measurement",
+          "text": "Wie wissen Sie, dass Ihre Bemühungen bei der Verwaltung der Server erfolgreich sind?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "operational_decisions",
+          "text": "Können Sie mir beschreiben, welche Arten von Entscheidungen Sie im Zusammenhang mit der Verwaltung der Server treffen?",
+          "type": "choice",
+          "required": true,
+          "options": [
+            "Ja",
+            "Nein"
+          ]
+        },
+        {
+          "id": "technical_responsibility",
+          "text": "Könnten Sie bitte genauer erläutern, welche technischen Aufgaben genau in Ihrem Verantwortungsbereich liegen?",
+          "type": "choice",
+          "required": true,
+          "options": [
+            "Ja",
+            "Nein"
+          ]
+        },
+        {
+          "id": "project_leadership",
+          "text": "Wie arbeiten Sie bei der Verwaltung der Server mit anderen zusammen und wie wird die Zusammenarbeit organisiert?",
+          "type": "choice",
+          "required": true,
+          "options": [
+            "Ja",
+            "Nein"
+          ]
+        }
+      ],
+      "role_questions": [
+        {
+          "id": "schema_position",
+          "field_id": "position",
+          "text": "Könnten Sie mir bitte mehr darüber erzählen, welche Rolle Sie innerhalb der IT-Abteilung innehaben und welchen Bereich Sie hauptsächlich verantworten?",
+          "type": "text",
+          "required": true,
+          "theme_id": "themenfeld_a_allgemein",
+          "theme_name": "Allgemeine Fragen",
+          "hint": "Klärung der Expertise und des Verantwortungsbereichs",
+          "original_question": "Welche Position haben Sie in der IT-Abteilung?"
+        },
+        {
+          "id": "schema_berufserfahrung_it",
+          "field_id": "berufserfahrung_it",
+          "text": "Können Sie mir sagen, wie viele Jahre Erfahrung Sie insgesamt in der IT-Branche haben? Besonders interessiert mich Ihre Zeit bei uns in dieser Organisation.",
+          "type": "number",
+          "required": true,
+          "theme_id": "themenfeld_a_allgemein",
+          "theme_name": "Allgemeine Fragen",
+          "hint": "Schätzung der Systemkenntnis und Zuverlässigkeit der Antworten",
+          "original_question": "Seit wie vielen Jahren arbeiten Sie im IT-Bereich, speziell in dieser Organisation?",
+          "unit": "Jahre"
+        },
+        {
+          "id": "schema_hauptaufgaben_it",
+          "field_id": "hauptaufgaben_it",
+          "text": "Nach all Ihrer Erfahrung in der IT-Branche und Ihrer Führungsrolle bei Projekten, können Sie uns vielleicht erzählen, welche Hauptaufgaben zu Ihrem täglichen Tätigkeitsbereich gehören?",
+          "type": "multiple_choice",
+          "required": true,
+          "theme_id": "themenfeld_a_allgemein",
+          "theme_name": "Allgemeine Fragen",
+          "hint": "Schnelle Kategorisierung des Tätigkeitsfelds für adaptive Nachfragen",
+          "original_question": "Welche Hauptaufgaben gehören zu Ihrem Tätigkeitsbereich?",
+          "options": [
+            "Systemadministration & Infrastruktur (Server, Netzwerk)",
+            "Datenbank- & Datenmanagement",
+            "Softwareentwicklung & Integration",
+            "IT-Sicherheit & Compliance",
+            "Technischer Support & Troubleshooting",
+            "Sonstiges"
+          ],
+          "multiple": true
+        }
+      ],
+      "chat_history": [],
+      "progress": {
+        "phase": "role_specific",
+        "phase_name": "Rollenspezifische Fragen (IT-Verantwortliche / Systemadministration)",
+        "current": 2,
+        "total": 16,
+        "progress_percent": 12.5,
+        "is_complete": false,
+        "role": "it",
+        "role_name": "IT-Verantwortliche / Systemadministration",
+        "themes_progress": {
+          "themenfeld_a_allgemein": {
+            "name": "Allgemeine Fragen",
+            "total": 5,
+            "filled": 2,
+            "required": 5,
+            "required_filled": 2,
+            "progress_percent": 40.0
+          },
+          "themenfeld_b_systemlandschaft": {
+            "name": "Aktuelle Systemlandschaft & Hardwareausstattung",
+            "total": 6,
+            "filled": 0,
+            "required": 4,
+            "required_filled": 0,
+            "progress_percent": 0.0
+          },
+          "themenfeld_c_datenmanagement": {
+            "name": "Datenmanagement & Datenschutz",
+            "total": 3,
+            "filled": 0,
+            "required": 3,
+            "required_filled": 0,
+            "progress_percent": 0.0
+          },
+          "themenfeld_d_automatisierung": {
+            "name": "Automatisierungspotenziale & Systemgrenzen",
+            "total": 5,
+            "filled": 0,
+            "required": 4,
+            "required_filled": 0,
+            "progress_percent": 0.0
+          }
+        },
+        "missing_required": [
+          "hauptaufgaben_it",
+          "relevante_systeme",
+          "systemkenntnis_selbsteinschaetzung",
+          "dms_erp_systeme",
+          "systeme_integriert",
+          "hardware_ausstattung",
+          "performance_skalierbarkeit",
+          "dokumentarten_volumen",
+          "compliance_anforderungen",
+          "identity_management",
+          "automatisierbare_schritte",
+          "vorhandene_apis",
+          "technische_huerden",
+          "dokument_durchlaufzeit"
+        ]
+      },
+      "is_current": true
+    }
+  ],
+  "current_interview_index": 1,
+  "_meta": {
+    "session_id": "session_1764690633013_1bdqotapd",
+    "saved_at": "2025-12-02T17:51:10.349932",
+    "version": "1.0"
+  }
+}

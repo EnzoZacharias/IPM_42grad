@@ -1,22 +1,96 @@
 """
 Dynamische Fragengenerierung mit Mistral LLM
 Generiert intelligente, kontextbezogene Fragen für die Intake-Phase
+und schema-basierte rollenspezifische Fragen.
 """
 import json
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Generator
 from app.llm.mistral_client import MistralClient
+from interview.role_schema_manager import RoleSchemaManager, get_schema_manager
 
 
 class DynamicQuestionGenerator:
     """
     Generiert Fragen dynamisch basierend auf vorherigen Antworten.
     Verwendet Mistral LLM für kontextbewusste Fragengenerierung.
+    Nutzt rollenspezifische Schemas für strukturierte Interviews.
     """
     
-    def __init__(self, llm: MistralClient):
+    def __init__(self, llm: MistralClient, schema_manager: RoleSchemaManager = None):
         self.llm = llm
+        self.schema_manager = schema_manager or get_schema_manager()
         self.num_initial_questions = 9  # 9 Einstiegsfragen zur Rollendefinition
-        self.max_role_questions = 10  # Maximal 10 rollenspezifische Fragen
+        self.max_role_questions = 20  # Erhöht: Schema-basierte Fragen können mehr sein
+        
+        # Vordefiniertes Fragen-Schema für die Intake-Phase
+        self.intake_question_schema = [
+            {
+                "id": "role_function",
+                "topic": "Rolle/Funktion",
+                "type": "text",
+                "hint": "Offene Frage zur Selbstbeschreibung der Position",
+                "example": "Welche Rolle bzw. Funktion haben Sie in Ihrem Unternehmen?"
+            },
+            {
+                "id": "tasks_responsibility",
+                "topic": "Aufgaben/Verantwortungsbereich",
+                "type": "text",
+                "hint": "Allgemeine Frage zu täglichen Tätigkeiten",
+                "example": "Welche Aufgaben gehören zu Ihrem Verantwortungsbereich?"
+            },
+            {
+                "id": "process_goals",
+                "topic": "Ziele im Prozess",
+                "type": "text",
+                "hint": "Was möchte die Person allgemein erreichen?",
+                "example": "Welche Ziele möchten Sie in Ihrem Arbeitsbereich erreichen?"
+            },
+            {
+                "id": "problems_challenges",
+                "topic": "Probleme/Herausforderungen",
+                "type": "text",
+                "hint": "Allgemeine Frage zu Schwierigkeiten im Arbeitsalltag",
+                "example": "Welche Herausforderungen begegnen Ihnen typischerweise bei Ihrer Arbeit?"
+            },
+            {
+                "id": "collaboration",
+                "topic": "Zusammenarbeit",
+                "type": "text",
+                "hint": "Mit wem arbeitet die Person zusammen?",
+                "example": "Mit welchen Kollegen oder Abteilungen arbeiten Sie regelmäßig zusammen?"
+            },
+            {
+                "id": "success_measurement",
+                "topic": "Erfolgsmessung",
+                "type": "text",
+                "hint": "Wie bewertet die Person ihren Erfolg?",
+                "example": "Woran erkennen Sie, dass Sie Ihre Arbeit gut gemacht haben?"
+            },
+            {
+                "id": "operational_decisions",
+                "topic": "Operative Entscheidungen",
+                "type": "choice",
+                "options": ["Ja", "Nein"],
+                "hint": "Tagesgeschäft und operative Arbeit",
+                "example": "Treffen Sie hauptsächlich operative Entscheidungen im Tagesgeschäft?"
+            },
+            {
+                "id": "technical_responsibility",
+                "topic": "Technische Verantwortung",
+                "type": "choice",
+                "options": ["Ja", "Nein"],
+                "hint": "Verantwortung für technische Systeme",
+                "example": "Sind Sie für technische Systeme oder deren Betreuung verantwortlich?"
+            },
+            {
+                "id": "project_leadership",
+                "topic": "Projektleitung/Teams",
+                "type": "choice",
+                "options": ["Ja", "Nein"],
+                "hint": "Führungsverantwortung",
+                "example": "Leiten Sie Projekte oder sind Sie für ein Team verantwortlich?"
+            }
+        ]
     
     def generate_initial_questions(self, num_questions: int = 9, document_summary: str = "") -> List[Dict[str, Any]]:
         """
@@ -160,6 +234,216 @@ class DynamicQuestionGenerator:
             print(f"⚠️  Fehler bei Fragengenerierung: {e}")
             # Fallback: Verwende Basis-Fragen
             return self._get_fallback_questions()
+    
+    def generate_single_intake_question(
+        self,
+        question_index: int,
+        answers: Dict[str, str],
+        previous_questions: List[Dict[str, Any]],
+        document_summary: str = ""
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Generiert eine einzelne Intake-Frage dynamisch basierend auf vorherigen Antworten.
+        
+        Args:
+            question_index: Index der zu generierenden Frage (0-8)
+            answers: Bisherige Antworten
+            previous_questions: Bereits gestellte Fragen
+            document_summary: Optionale Zusammenfassung der hochgeladenen Dokumente
+            
+        Returns:
+            Einzelne Frage als Dictionary oder None bei Fehler
+        """
+        if question_index >= len(self.intake_question_schema):
+            return None
+        
+        schema = self.intake_question_schema[question_index]
+        
+        # Kontext aus vorherigen Antworten aufbauen
+        context_parts = []
+        for i, q in enumerate(previous_questions):
+            q_id = q.get("id", "")
+            answer = answers.get(q_id, "")
+            if answer:
+                context_parts.append(f"Frage {i+1} ({q.get('topic', '')}): {q.get('text', '')}\nAntwort: {answer}")
+        
+        previous_context = "\n\n".join(context_parts) if context_parts else "Noch keine Antworten vorhanden."
+        
+        # Dokumenten-Kontext hinzufügen
+        doc_context = ""
+        if document_summary:
+            doc_context = f"""
+
+**KONTEXT AUS UNTERNEHMENSDOKUMENTEN:**
+{document_summary}
+
+Beziehe dich auf spezifische Aspekte aus den Dokumenten, wenn passend.
+"""
+        
+        system_prompt = {
+            "role": "system",
+            "content": f"""Du führst ein Interview zur Prozessdokumentation. Formuliere eine offene, neutrale Frage.
+
+Du generierst jetzt Frage Nr. {question_index + 1} von 9 Einstiegsfragen.
+
+**THEMA DIESER FRAGE:** {schema['topic']}
+**FRAGETYP:** {schema['type']}
+**BEISPIELFORMULIERUNG:** "{schema['example']}"
+{doc_context}
+
+**WICHTIGE REGELN:**
+1. Formuliere die Frage OFFEN und NEUTRAL - keine Suggestionen oder Annahmen
+2. Passe die Formulierung natürlich an den bisherigen Gesprächsverlauf an
+3. Wenn in den Antworten spezifische Details genannt wurden, beziehe dich darauf
+4. Vermeide kategorisierende Begriffe wie "IT", "Fachabteilung", "Management"
+5. Die Frage soll zum Erzählen einladen, nicht zu einer bestimmten Antwort führen
+6. Für type="choice": Verwende genau die vorgegebenen Optionen
+
+**BISHERIGER INTERVIEW-VERLAUF:**
+{previous_context}
+
+Antworte AUSSCHLIESSLICH im JSON-Format:
+{{
+    "id": "{schema['id']}",
+    "text": "Deine formulierte Frage - offen und neutral",
+    "type": "{schema['type']}",
+    {"'options': " + json.dumps(schema.get('options', [])) + "," if schema['type'] == 'choice' else ""}
+    "required": true
+}}"""
+        }
+        
+        user_prompt = {
+            "role": "user",
+            "content": f"Formuliere eine offene, neutrale Frage zum Thema '{schema['topic']}' basierend auf dem bisherigen Gesprächsverlauf."
+        }
+        
+        try:
+            response = self.llm.complete(
+                messages=[system_prompt, user_prompt],
+                json_mode={"type": "json_object"},
+                temperature=0.7
+            )
+            
+            result = self._parse_response(response.choices[0].message.content)
+            
+            # Validiere und ergänze Felder
+            result["id"] = schema["id"]
+            result["type"] = schema["type"]
+            result["required"] = True
+            if schema["type"] == "choice":
+                result["options"] = schema.get("options", ["Ja", "Nein"])
+            
+            validated = self._validate_questions([result])
+            return validated[0] if validated else self._get_fallback_questions()[question_index]
+            
+        except Exception as e:
+            print(f"⚠️  Fehler bei Einzelfragen-Generierung: {e}")
+            return self._get_fallback_questions()[question_index]
+    
+    def generate_single_intake_question_stream(
+        self,
+        question_index: int,
+        answers: Dict[str, str],
+        previous_questions: List[Dict[str, Any]],
+        document_summary: str = ""
+    ) -> Generator[str, None, Optional[Dict[str, Any]]]:
+        """
+        Generiert eine einzelne Intake-Frage mit Streaming.
+        Yielded Text-Chunks während der Generierung.
+        Gibt am Ende die vollständige Frage als Dictionary zurück.
+        
+        Args:
+            question_index: Index der zu generierenden Frage (0-8)
+            answers: Bisherige Antworten
+            previous_questions: Bereits gestellte Fragen
+            document_summary: Optionale Zusammenfassung
+            
+        Yields:
+            Text-Chunks während der Generierung
+            
+        Returns:
+            Fertige Frage als Dictionary (über generator.send() oder als letzter yield)
+        """
+        if question_index >= len(self.intake_question_schema):
+            return None
+        
+        schema = self.intake_question_schema[question_index]
+        
+        # Kontext aus vorherigen Antworten
+        context_parts = []
+        for i, q in enumerate(previous_questions):
+            q_id = q.get("id", "")
+            answer = answers.get(q_id, "")
+            if answer:
+                context_parts.append(f"Frage {i+1}: {q.get('text', '')[:100]}\nAntwort: {answer[:200]}")
+        
+        previous_context = "\n".join(context_parts[-3:]) if context_parts else "Noch keine Antworten."
+        
+        doc_hint = ""
+        if document_summary:
+            doc_hint = f"\n\nKontext aus Dokumenten: {document_summary[:500]}..."
+        
+        system_prompt = {
+            "role": "system",
+            "content": f"""Du führst ein Interview zur Prozessdokumentation. Formuliere eine offene, neutrale Frage.
+
+Frage {question_index + 1}/9 - Thema: "{schema['topic']}"
+Beispielformulierung: "{schema['example']}"
+Fragetyp: {schema['type']}
+{doc_hint}
+
+**WICHTIGE REGELN:**
+1. Formuliere die Frage OFFEN und NEUTRAL - vermeide Suggestionen oder Annahmen
+2. Passe die Formulierung natürlich an den bisherigen Gesprächsverlauf an
+3. Beziehe dich auf konkrete Details aus vorherigen Antworten, falls passend
+4. Vermeide Fachbegriffe wie "IT-Rolle", "Fachabteilung", "Management" in der Frage
+5. Die Frage soll zum Erzählen einladen, nicht kategorisieren
+
+Gib NUR den Fragetext aus, ohne JSON oder Formatierung."""
+        }
+        
+        user_prompt = {
+            "role": "user",
+            "content": f"""Bisheriger Gesprächsverlauf:
+{previous_context}
+
+Formuliere eine offene, neutrale Frage zum Thema "{schema['topic']}":"""
+        }
+        
+        full_text = ""
+        
+        try:
+            for chunk in self.llm.complete_stream(
+                messages=[system_prompt, user_prompt],
+                temperature=0.7
+            ):
+                if chunk.content:
+                    full_text += chunk.content
+                    yield chunk.content
+                if chunk.done:
+                    break
+            
+            # Bereinige den Text
+            question_text = full_text.strip().strip('"').strip()
+            
+            # Erstelle finales Question-Dictionary
+            result = {
+                "id": schema["id"],
+                "text": question_text,
+                "type": schema["type"],
+                "required": True
+            }
+            
+            if schema["type"] == "choice":
+                result["options"] = schema.get("options", ["Ja", "Nein"])
+            
+            # Speichere das Ergebnis für den Aufrufer
+            yield {"__complete__": True, "question": result}
+            
+        except Exception as e:
+            print(f"⚠️  Fehler bei Streaming-Generierung: {e}")
+            fallback = self._get_fallback_questions()[question_index]
+            yield {"__complete__": True, "question": fallback}
     
     def generate_role_specific_question(
         self,
@@ -335,6 +619,289 @@ Antworte im JSON-Format."""
         except Exception as e:
             print(f"⚠️  Fehler bei rollenspezifischer Fragengenerierung: {e}")
             return None
+    
+    def generate_schema_based_question(
+        self,
+        role: str,
+        filled_fields: Dict[str, Any],
+        answers: Dict[str, str],
+        document_context: str = ""
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Generiert eine Frage basierend auf dem rollenspezifischen Schema.
+        Nutzt die JSON-Schemas aus role_schema_*.json.
+        
+        Args:
+            role: Die identifizierte Rolle (it, fach, management)
+            filled_fields: Dictionary mit bereits ausgefüllten Schema-Feldern
+            answers: Bisherige Antworten (für Kontext)
+            document_context: Optionaler Kontext aus hochgeladenen Dokumenten
+            
+        Returns:
+            Frage-Dictionary oder None wenn alle Felder ausgefüllt sind
+        """
+        # Hole das nächste unbeantwortete Feld aus dem Schema
+        next_field = self.schema_manager.get_next_unanswered_field(role, filled_fields)
+        
+        if next_field is None:
+            # Alle Pflichtfelder sind ausgefüllt
+            print(f"✅ Alle Schema-Felder für Rolle '{role}' ausgefüllt")
+            return None
+        
+        field_id, field_def = next_field
+        
+        # Baue Kontext aus vorherigen Antworten
+        context_parts = []
+        recent_answers = list(answers.items())[-3:]  # Letzte 3 Antworten
+        for q_id, answer in recent_answers:
+            if answer:
+                context_parts.append(f"- {q_id}: {answer[:150]}...")
+        previous_context = "\n".join(context_parts) if context_parts else "Noch keine Antworten."
+        
+        # Dokumentenkontext
+        doc_context = ""
+        if document_context:
+            doc_context = f"""
+
+**KONTEXT AUS DOKUMENTEN:**
+{document_context[:500]}
+"""
+        
+        # Typ-spezifische Instruktionen
+        type_instruction = self._get_type_instruction(field_def)
+        
+        system_prompt = {
+            "role": "system",
+            "content": f"""Du führst ein strukturiertes Interview für die Rolle: {self.schema_manager.get_schema(role).get('role_name', role)}.
+
+**AKTUELLES THEMENFELD:** {field_def.get('theme_name', 'Allgemein')}
+**FELD-ID:** {field_id}
+**ORIGINAL-FRAGE:** {field_def.get('question', '')}
+**HINWEIS:** {field_def.get('hint', '')}
+{doc_context}
+
+**DEINE AUFGABE:**
+Formuliere die Frage natürlich und passend zum bisherigen Gesprächsverlauf.
+Die Frage soll die gleichen Informationen erfassen wie die Original-Frage,
+aber flüssiger und kontextbezogener formuliert sein.
+
+{type_instruction}
+
+**WICHTIG:**
+1. Behalte den Informationsgehalt der Original-Frage bei
+2. Passe die Formulierung an den bisherigen Dialog an
+3. Sei freundlich aber professionell
+4. Vermeide zu technische Sprache wo möglich
+
+Antworte im JSON-Format:
+{{
+    "text": "Die formulierte Frage",
+    "follow_up_hint": "Optionaler Hinweis für Nachfragen"
+}}"""
+        }
+        
+        user_prompt = {
+            "role": "user",
+            "content": f"""Bisheriger Kontext:
+{previous_context}
+
+Formuliere nun eine natürliche Frage für das Feld '{field_id}' im Themenfeld '{field_def.get('theme_name', 'Allgemein')}'."""
+        }
+        
+        try:
+            response = self.llm.complete(
+                messages=[system_prompt, user_prompt],
+                json_mode={"type": "json_object"},
+                temperature=0.7
+            )
+            
+            result = self._parse_response(response.choices[0].message.content)
+            question_text = result.get("text", field_def.get("question", ""))
+            
+            # Erstelle das Fragen-Dictionary
+            question = {
+                "id": f"schema_{field_id}",
+                "field_id": field_id,
+                "text": question_text,
+                "type": field_def.get("type", "text"),
+                "required": field_def.get("required", True),
+                "theme_id": field_def.get("theme_id"),
+                "theme_name": field_def.get("theme_name"),
+                "hint": field_def.get("hint", ""),
+                "original_question": field_def.get("question", "")
+            }
+            
+            # Füge typ-spezifische Felder hinzu
+            if field_def.get("type") == "choice":
+                question["options"] = field_def.get("options", [])
+            elif field_def.get("type") == "multiple_choice":
+                question["options"] = field_def.get("options", [])
+                question["multiple"] = True
+            elif field_def.get("type") == "scale":
+                question["scale_min"] = field_def.get("scale_min", 1)
+                question["scale_max"] = field_def.get("scale_max", 5)
+                question["scale_labels"] = field_def.get("scale_labels", {})
+            elif field_def.get("type") == "ranking":
+                question["options"] = field_def.get("options", [])
+                question["ranking"] = True
+            elif field_def.get("type") == "number":
+                question["unit"] = field_def.get("unit", "")
+            
+            return question
+            
+        except Exception as e:
+            print(f"⚠️  Fehler bei Schema-basierter Fragengenerierung: {e}")
+            # Fallback: Verwende Original-Frage direkt
+            return {
+                "id": f"schema_{field_id}",
+                "field_id": field_id,
+                "text": field_def.get("question", f"Bitte beantworten Sie die Frage zu {field_id}"),
+                "type": field_def.get("type", "text"),
+                "required": field_def.get("required", True),
+                "theme_id": field_def.get("theme_id"),
+                "theme_name": field_def.get("theme_name"),
+                "options": field_def.get("options", []) if field_def.get("type") in ["choice", "multiple_choice", "ranking"] else None
+            }
+    
+    def _get_type_instruction(self, field_def: Dict[str, Any]) -> str:
+        """Gibt typ-spezifische Instruktionen für die Frageformulierung."""
+        field_type = field_def.get("type", "text")
+        
+        if field_type == "choice":
+            options = field_def.get("options", [])
+            return f"**FRAGETYP:** Auswahloptionen - Die Antwort sollte eine der folgenden sein: {', '.join(options)}"
+        
+        elif field_type == "multiple_choice":
+            options = field_def.get("options", [])
+            return f"**FRAGETYP:** Mehrfachauswahl - Mehrere der folgenden Optionen können gewählt werden: {', '.join(options)}"
+        
+        elif field_type == "scale":
+            scale_min = field_def.get("scale_min", 1)
+            scale_max = field_def.get("scale_max", 5)
+            labels = field_def.get("scale_labels", {})
+            return f"**FRAGETYP:** Skala von {scale_min} bis {scale_max} ({labels.get(str(scale_min), '')} bis {labels.get(str(scale_max), '')})"
+        
+        elif field_type == "number":
+            unit = field_def.get("unit", "")
+            return f"**FRAGETYP:** Zahleneingabe (Einheit: {unit})"
+        
+        elif field_type == "ranking":
+            options = field_def.get("options", [])
+            return f"**FRAGETYP:** Rangfolge - Diese Optionen sollen priorisiert werden: {', '.join(options)}"
+        
+        elif field_type == "text_list":
+            return "**FRAGETYP:** Liste/Aufzählung - Mehrere Elemente als Antwort erwartet"
+        
+        elif field_type == "text_with_frequency":
+            return "**FRAGETYP:** Text mit Häufigkeitsangabe - Elemente mit Häufigkeit (täglich/wöchentlich/selten)"
+        
+        return "**FRAGETYP:** Offene Textantwort"
+    
+    def get_role_progress(self, role: str, filled_fields: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Gibt den Fortschritt für eine Rolle zurück.
+        Wrapper für schema_manager.calculate_progress.
+        """
+        return self.schema_manager.calculate_progress(role, filled_fields)
+    
+    def get_progress_display(self, role: str, filled_fields: Dict[str, Any]) -> str:
+        """
+        Gibt eine formatierte Fortschrittsanzeige zurück.
+        Wrapper für schema_manager.get_progress_display.
+        """
+        return self.schema_manager.get_progress_display(role, filled_fields)
+    
+    def is_interview_complete(self, role: str, filled_fields: Dict[str, Any]) -> bool:
+        """Prüft ob das Interview für eine Rolle abgeschlossen ist."""
+        progress = self.schema_manager.calculate_progress(role, filled_fields)
+        return progress.get("is_complete", False)
+    
+    def extract_fields_from_answer(
+        self,
+        role: str,
+        answer: str,
+        current_field_id: str,
+        filled_fields: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Extrahiert Feldwerte aus einer Antwort.
+        Eine umfangreiche Antwort kann mehrere Felder füllen.
+        
+        Args:
+            role: Die aktuelle Rolle
+            answer: Die Antwort des Nutzers
+            current_field_id: Das Feld für das die Frage gestellt wurde
+            filled_fields: Bereits ausgefüllte Felder
+            
+        Returns:
+            Dictionary mit extrahierten Feldwerten
+        """
+        updates = {current_field_id: answer}
+        
+        # Hole alle noch offenen Felder
+        all_fields = self.schema_manager.get_all_fields(role)
+        open_fields = {
+            fid: fdef for fid, fdef in all_fields.items()
+            if fid not in filled_fields and fid != current_field_id
+        }
+        
+        if not open_fields or len(answer) < 100:
+            # Kurze Antworten oder keine offenen Felder: nur Hauptfeld
+            return updates
+        
+        # Versuche zusätzliche Felder zu extrahieren via LLM
+        # (nur bei umfangreichen Antworten)
+        fields_info = "\n".join([
+            f"- {fid}: {fdef.get('question', '')} (Typ: {fdef.get('type', 'text')})"
+            for fid, fdef in list(open_fields.items())[:5]  # Max 5 Felder prüfen
+        ])
+        
+        system_prompt = {
+            "role": "system",
+            "content": f"""Analysiere die Antwort und prüfe, ob sie Informationen zu mehreren Feldern enthält.
+
+**OFFENE FELDER:**
+{fields_info}
+
+**AUFGABE:**
+Prüfe ob die Antwort Informationen enthält, die eines der offenen Felder beantworten könnten.
+Extrahiere NUR klar erkennbare Informationen, rate nicht.
+
+Antworte im JSON-Format:
+{{
+    "extracted_fields": {{
+        "field_id": "extrahierter Wert",
+        ...
+    }},
+    "confidence": "high|medium|low"
+}}
+
+Bei geringer Konfidenz oder unklaren Informationen: leeres extracted_fields zurückgeben."""
+        }
+        
+        try:
+            response = self.llm.complete(
+                messages=[
+                    system_prompt,
+                    {"role": "user", "content": f"Antwort des Nutzers:\n{answer}"}
+                ],
+                json_mode={"type": "json_object"},
+                temperature=0.3
+            )
+            
+            result = self._parse_response(response.choices[0].message.content)
+            
+            if result.get("confidence") in ["high", "medium"]:
+                extracted = result.get("extracted_fields", {})
+                for field_id, value in extracted.items():
+                    if field_id in open_fields and value:
+                        updates[field_id] = value
+                        print(f"📝 Zusätzliches Feld extrahiert: {field_id}")
+            
+        except Exception as e:
+            print(f"⚠️  Fehler bei Feldextraktion: {e}")
+        
+        return updates
     
     def _format_interview_context(
         self, 

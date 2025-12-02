@@ -399,9 +399,9 @@ ZUSAMMENFASSUNG:"""
 
         try:
             # Nutze LLM für Zusammenfassung
-            response = llm_client.chat(
-                model="mistral-small-latest",
-                messages=[{"role": "user", "content": prompt}],
+            messages = [{"role": "user", "content": prompt}]
+            response = llm_client.complete(
+                messages=messages,
                 temperature=0.3,  # Niedrige Temperature für faktische Zusammenfassung
                 max_tokens=1500
             )
