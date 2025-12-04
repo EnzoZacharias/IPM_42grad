@@ -60,7 +60,7 @@ class MistralClient:
         self._api_key = api_key or os.getenv("MISTRAL_API_KEY", "")
         
         # Lokale Server-Konfiguration
-        self._local_base_url = base_url or os.getenv("LOCAL_LLM_URL", "http://localhost:11434")
+        self._local_base_url = base_url or os.getenv("LOCAL_LLM_URL", "http://172.17.86.63:11434")
         self._local_model = model or os.getenv("LOCAL_LLM_MODEL", "mistral-small")
         
         # Mistral-API-Konfiguration

@@ -11,7 +11,7 @@ from flask import Flask, render_template, request, jsonify, Response, session as
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from threading import Lock
-from app.llm.mistral_client import MistralClient
+from app.llm.mistral_client import MistralClient, BACKEND_LOCAL, BACKEND_MISTRAL_API
 from interview.repo import QuestionRepo
 from interview.role_classifier import RoleClassifier
 from interview.question_generator import DynamicQuestionGenerator
@@ -85,7 +85,20 @@ def get_or_create_session(session_id, load_saved: bool = True):
                 logger.info(f"🆕 Erstelle NEUE Session: {session_id}")
             
             # Initialisiere Interview-Komponenten
-            llm_client = MistralClient()
+            # Prüfe zuerst ob lokales Ollama verfügbar ist, sonst Mistral API
+            temp_client = MistralClient(backend=BACKEND_LOCAL)
+            if temp_client.is_local_available():
+                logger.info("🏠 Lokales Ollama Backend verfügbar - verwende lokales Backend")
+                llm_client = temp_client
+            else:
+                mistral_api_key = os.getenv("MISTRAL_API_KEY", "")
+                if mistral_api_key:
+                    logger.info("🔑 Lokales Backend nicht verfügbar - verwende Mistral API Backend")
+                    llm_client = MistralClient(backend=BACKEND_MISTRAL_API, api_key=mistral_api_key)
+                else:
+                    logger.warning("⚠️ Weder Ollama noch Mistral API verfügbar - verwende lokales Backend (wird fehlschlagen)")
+                    llm_client = temp_client
+            
             questions_path = os.path.join(os.path.dirname(__file__), "config", "questions.json")
             repo = QuestionRepo(path=questions_path)
             classifier = RoleClassifier(llm_client, repo)
@@ -174,12 +187,19 @@ def start_interview():
     data = request.json or {}
     session_id = data.get('session_id', 'default')
     preset_role = data.get('preset_role')  # Optional: Voreingestellte Rolle
+    session_name = data.get('session_name')  # Optional: Projektname
     
     print(f"\n🚀 /api/start aufgerufen für Session: {session_id}")
     if preset_role:
         print(f"   📌 Voreingestellte Rolle: {preset_role}")
+    if session_name:
+        print(f"   📝 Projektname: {session_name}")
     
     interview = get_or_create_session(session_id)
+    
+    # Speichere den Session-Namen/Projektnamen
+    if session_name:
+        interview['session_data']['session_name'] = session_name
     
     # Falls eine Rolle voreingestellt ist, setze sie direkt
     if preset_role and preset_role in ['fach', 'it', 'management']:
@@ -340,7 +360,11 @@ def next_question_stream():
         
         yield f"data: {json.dumps({'type': 'done'})}\n\n"
     
-    return Response(generate(), mimetype='text/event-stream')
+    response = Response(generate(), mimetype='text/event-stream')
+    response.headers['Cache-Control'] = 'no-cache'
+    response.headers['X-Accel-Buffering'] = 'no'
+    response.headers['Connection'] = 'keep-alive'
+    return response
 
 @app.route('/api/answer-stream', methods=['POST'])
 def submit_answer_stream():
@@ -388,7 +412,12 @@ def submit_answer_stream():
                         completed = question is None
                         # Auto-Save nach jeder Antwort (auch bei Streaming)
                         save_session(session_id)
-                        yield f"data: {json.dumps({'type': 'complete', 'question': question, 'status': status, 'completed': completed, 'role_classified': result.get('role_classified', False)})}\n\n"
+                        
+                        # Bei Rollenklassifizierung: Erst Rolle senden, dann Frage
+                        if result.get('role_classified'):
+                            yield f"data: {json.dumps({'type': 'role_classified', 'status': status})}\n\n"
+                        
+                        yield f"data: {json.dumps({'type': 'complete', 'question': question, 'status': status, 'completed': completed, 'role_classified': False})}\n\n"
                         break
         except Exception as e:
             logger.error(f"Fehler bei Answer-Streaming: {str(e)}")
@@ -396,7 +425,11 @@ def submit_answer_stream():
         
         yield f"data: {json.dumps({'type': 'done'})}\n\n"
     
-    return Response(generate(), mimetype='text/event-stream')
+    response = Response(generate(), mimetype='text/event-stream')
+    response.headers['Cache-Control'] = 'no-cache'
+    response.headers['X-Accel-Buffering'] = 'no'
+    response.headers['Connection'] = 'keep-alive'
+    return response
 
 @app.route('/api/progress', methods=['GET'])
 def get_progress():
@@ -1244,8 +1277,15 @@ def export_pdf():
         }), 400
     
     try:
-        # Erstelle PDF-Generator mit LLM
-        llm_client = interview['engine'].question_generator.llm
+        # Erstelle PDF-Generator mit Mistral API (beste Ergebnisse)
+        mistral_api_key = os.getenv("MISTRAL_API_KEY", "")
+        if mistral_api_key:
+            logger.info("🔑 PDF-Export: Verwende Mistral API Backend")
+            llm_client = MistralClient(backend=BACKEND_MISTRAL_API, api_key=mistral_api_key)
+        else:
+            logger.warning("⚠️ PDF-Export: Kein MISTRAL_API_KEY - Fallback ohne LLM")
+            llm_client = None
+        
         pdf_generator = PDFDocumentGenerator(llm_client=llm_client)
         
         # Generiere PDF

@@ -96,7 +96,10 @@ class InterviewApp {
         <div class="session-option ${
           isCurrent ? 'current' : ''}" data-session-id="${session.session_id}">
           <div class="session-info">
-            <span class="session-role">${
+            <span class="session-name">${
+          session.session_name || session.role ||
+          'Unbenanntes Interview'}</span>
+            <span class="session-role-badge">${
           session.role || 'Noch nicht klassifiziert'}</span>
             <span class="session-date">${dateStr}</span>
           </div>

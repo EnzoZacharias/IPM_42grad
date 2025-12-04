@@ -1,0 +1,319 @@
+{
+  "phase": "role_specific",
+  "answers": {
+    "role_function": "Ich bin der Senior System Administrator und technischer Lead unseres IT-Teams. Meine Hauptaufgabe ist die Verwaltung und Überwachung unserer gesamten Server-Infrastruktur. Ich bin verantwortlich für die VMware-Virtualisierungsplattform mit etwa 20 virtuellen Maschinen, das Backup- und Disaster-Recovery-Management, sowie die Netzwerk- und Firewall-Konfiguration. Ich kümmere mich um die tägliche Überwachung mittels Monitoring-Tools wie Zabbix und Grafana. Außerdem bin ich der Hauptansprechpartner für größere technische Projekte wie die geplante ERP-Migration und Cloud-Integration. In technischen Notfällen bin ich die erste Eskalationsstufe - wenn kritische Systeme ausfallen, werde ich sofort informiert. Ich führe auch die technischen Anforderungen für neue Projekte durch und evaluiere neue Technologien und Tools, die wir einsetzen könnten.",
+    "tasks_responsibility": "Meine täglichen Aufgaben sind sehr vielfältig. Jeden Morgen starte ich mit der Überwachung unserer Systeme - ich checke die Monitoring-Dashboards auf Zabbix und Grafana, um sicherzustellen, dass alle Server und Netzwerk-Komponenten normal laufen. Dann kümmere ich mich um Patch-Management - wir müssen regelmäßig Updates für Windows Server, SQL Server und andere Systeme einspielen, was ich koordiniere und teste. Die Backup-Verwaltung ist auch zeitaufwendig - ich überwache tägliche Backups auf VMware und in Azure, und führe regelmäßig Recovery-Tests durch. Außerdem verwalte ich User-Accounts im Active Directory, richte neue Systeme auf und konfiguriere Netzwerk-Zugriffe. Ein großer Teil meiner Zeit geht für Troubleshooting drauf - wenn Systeme Probleme haben oder User Issues melden, bin ich oft der erste, der die Root-Cause analysiert. Ich dokumentiere auch Systemkonfigurationen und erstelle Runbooks für häufige Probleme. Und nicht zuletzt bin ich für die IT-Sicherheit verantwortlich - Firewall-Regeln, VPN-Zugriffe, Antivirus-Updates und Compliance-Anforderungen.",
+    "process_goals": "Mein primäres Ziel im Arbeitsalltag ist die Gewährleistung einer stabilen und sicheren Infrastruktur mit mindestens 99,5% Verfügbarkeit für unsere kritischen Systeme. Das ERP- und MES-System müssen rund um die Uhr erreichbar sein, sonst steht die Produktion still. Ein weiteres wichtiges Ziel ist die Reduktion von manuellen, repetitiven Aufgaben durch Automatisierung. Wir verlieren viel Zeit mit händischem Patch-Management, User-Provisioning und Daten-Transfers zwischen Systemen - das könnte automatisiert werden. Außerdem verfolge ich das Ziel, die IT-Infrastruktur zu modernisieren. Unser ERP-System ist 12 Jahre alt und die Hardware wird fragil. Ich möchte eine moderne, cloud-basierte Infrastruktur mit besseren APIs und Integration aufbauen. Auch Monitoring und Logging sind Ziele - wir brauchen bessere Visibility in unsere Systeme, um Probleme proaktiv zu erkennen, bevor sie kritisch werden. Langfristig möchte ich auch die IT-Kosten senken durch Cloud-Migration und redundante lokale Hardware eliminieren - das würde auch die Wartung vereinfachen.",
+    "problems_challenges": "Die größte Herausforderung ist definitiv die veraltete Hardware und Software. Unser ERP-System läuft auf Windows Server 2012 R2, das ist mittlerweile 12 Jahre alt und aus dem erweiterten Support rausgelaufen. Jedes Patch oder Update ist ein enormes Risiko - wir hatten letzte Woche einen Ausfall von 4 Stunden, weil alte Hardware-Komponenten einfach nicht mehr verfügbar sind. Das zweite große Problem ist die fehlende Automatisierung. Ich verbringe etwa 30% meiner Zeit mit manuellen, repetitiven Aufgaben - Patch-Management, User-Provisioning, Datenexporte zwischen Systemen. Das sollte alles automatisiert sein. Ein weiteres Hindernis ist die fehlende Integration zwischen unseren Systemen. Daten werden oft per Excel-Export zwischen ERP, Buchhaltung und MES übertragen - das ist fehleranfällig und zeitaufwendig. Auch der Fachkräftemangel macht mir zu schaffen - ich habe nur 5 Leute im Team, aber die Anforderungen wachsen. Und schließlich: Die Dokumentation unserer Infrastruktur ist lückenhaft, was Troubleshooting erschwert. Wenn ich im Urlaub bin, haben meine Kollegen oft Schwierigkeiten, Probleme selbstständig zu lösen.",
+    "collaboration": "Meine engste Zusammenarbeit ist natürlich mit meinem eigenen IT-Team von 5 Personen - wir koordinieren täglich über Tickets und regelmäßige Standups. Aber außerhalb der IT arbeite ich sehr eng mit der Produktion zusammen, speziell mit dem Produktionsleiter und den Schichtleitern. Sie sind die Hauptnutzer des MES-Systems und des ERP-Systems, daher melden sie Probleme und Anforderungen direkt an mich. Auch der Leiter der Materialwirtschaft ist ein wichtiger Ansprechpartner, weil er das ERP-System intensiv nutzt für Bestellungen und Lagerverwaltung. Mit dem CFO und der Buchhaltung arbeite ich zusammen bei Finanz-relevanten Systemen und Compliance-Anforderungen. Eine regelmäßige Zusammenarbeit habe ich auch mit externen Partnern - wir haben einen SAP-Berater engagiert, der uns bei der ERP-Evaluierung unterstützt. Und mit unserem Internet-Provider und Hosting-Partner kommuniziere ich für Netzwerk- und Cloud-Fragen. Die Herausforderung ist, dass die Kommunikation zwischen IT und Fachabteilungen manchmal schwierig ist - die Produktion meldet kritische Probleme manchmal zu spät, und es gibt unterschiedliche Prioritäten. Deshalb haben wir ein strukturiertes Ticketsystem eingeführt und führen monatliche Abstimmungstermine durch.",
+    "success_measurement": "Ich messe Erfolg anhand von konkreten technischen KPIs. Die wichtigste Metrik ist die Verfügbarkeit unserer kritischen Systeme - wir tracken täglich die Uptime des ERP- und MES-Systems. Aktuell liegen wir bei etwa 97%, unser Ziel sind 99,5%. Das dokumentiere ich in Grafana und berichte es monatlich. Eine weitere wichtige Metrik ist die Mean-Time-To-Recovery - wie schnell wir Ausfälle beheben. Das messen wir über unser Ticketsystem - aktuell brauchen wir durchschnittlich 2-3 Stunden bis zur Behebung. Ein großer Erfolg war die Reduktion von ungeplanten Neustarts des ERP-Systems - früher hatte das System täglich Abstürze, jetzt sind es nur noch 1-2 pro Woche dank meines automatisierten Neustart-Workarounds. Ich messe auch die Dauer von Patch-Zyklen - wie lange dauert es, bis wir Sicherheitsupdates einspielen. Und intern nutze ich Monitoring-Metriken wie CPU-Auslastung, Speichernutzung und Netzwerk-Performance. Aber der beste Indikator ist eigentlich das User-Feedback - wenn die Produktion weniger ausfallbedingte Verluste meldet und die Teams weniger Frustration über IT-Probleme äußern, weiß ich, dass ich erfolgreich bin.",
+    "operational_decisions": "Das ist eine tägliche Herausforderung. Ich muss ständig abwägen zwischen Risiko und Notwendigkeit. Zum Beispiel: Wenn Microsoft ein kritisches Security-Update für Windows Server 2012 R2 veröffentlicht, muss ich entscheiden - spielen wir das Update ein und riskieren damit einen Systemabsturz, oder verzichten wir darauf und nehmen das Sicherheitsrisiko in Kauf? Oft wähle ich einen Mittelweg - ich teste das Update zuerst auf einer separaten VM, bevor ich es in die Produktion nehme. Das kostet Zeit, aber es ist notwendig geworden. Ein anderes Beispiel: Die alte Hardware zeigt Verschleißerscheinungen - manchmal denke ich, eine Festplatte könnte bald ausfallen. Ich muss dann entscheiden, ob ich sie prophylaktisch tausche, obwohl das einen geplanten Produktionsausfall bedeutet, oder ob ich das Risiko trage und hoffe, dass sie noch hält. Ich habe auch einen nächtlichen automatisierten Neustart des ERP-Systems eingebaut, weil es zu Stoßzeiten sonst Speicherprobleme bekommt. Das ist kein echte Lösung, sondern ein Workaround. Manche Anforderungen für neue Features kann ich nicht umsetzen, weil die alte Hardware das nicht mehr schafft. Und bei Ersatzteilen muss ich oft lange recherchieren oder über Ebay kaufen, weil die Teile längst aus dem normalen Handel raus sind. Diese operativen Entscheidungen zeigen mir täglich, dass wir nicht länger warten können mit der Modernisierung.",
+    "technical_responsibility": "Mein Arbeitstag beginnt typischerweise um 7 Uhr mit einem Check der Monitoring-Dashboards. Ich schaue auf Zabbix und Grafana, um zu sehen, ob über Nacht irgendwelche Probleme aufgetreten sind. Danach kümmere ich mich um das Backup-Management - ich überprüfe, ob alle nächtlichen Backups erfolgreich waren, sowohl auf VMware als auch in Azure. Die Systeme, die ich täglich betreue, sind sehr vielfältig. Im Kern haben wir eine VMware-Virtualisierungsplattform mit etwa 20 virtuellen Maschinen auf zwei physischen Servern. Das ERP-System läuft auf einem dedizierten Server mit SQL Server Datenbank - das ist absolut kritisch und muss 24/7 verfügbar sein. Dann haben wir das MES-System für die Produktionssteuerung, das direkt mit der Fertigungsanlage gekoppelt ist. Außerdem verwalte ich unser Active Directory für Benutzerverwaltung, Exchange für E-Mail, SharePoint für Dokumentenverwaltung und verschiedene Services in Azure. Im Netzwerk betreue ich mehrere VLANs, eine Firewall und VPN-Zugriffe für Remote-Worker. Auch die Client-Infrastruktur gehört dazu - etwa 200 PCs und 50 Drucker. Ein großes Problem ist die fehlende Integration zwischen diesen Systemen - oft werden Daten manuell per Excel zwischen ERP, Buchhaltung und MES übertragen. Das kostet viel Zeit und ist fehleranfällig.",
+    "project_leadership": "Die täglichen Monitoring-Checks sind essentiell für meine Entscheidungsfindung bei den veralteten Systemen. Wenn ich morgens die Dashboards anschaue, sehe ich sofort, wie das ERP-System die Nacht überstanden hat. Oft sehe ich Speicherlecks oder CPU-Spitzen, die zeigen, dass das System instabil wird. Das beeinflusst meine operative Entscheidung - soll ich einen sofortigen Neustart durchführen oder kann das bis zur nächsten Schicht warten? Die Monitoring-Daten helfen mir auch bei Prognosen - wenn ich sehe, dass die Speichernutzung kontinuierlich steigt, weiß ich, dass bald ein Ausfall droht und ich muss reagieren. Ich habe deshalb den automatisierten Neustart um 2 Uhr nachts implementiert - basierend auf den Daten, die mir zeigen, dass das System dann am stabilsten ist. Bei größeren Problemen - zum Beispiel wenn ein Server hohe Festplattenauslastung zeigt - muss ich entscheiden: Können wir das mit dem veralteten System noch beheben, oder wird das kritisch? Diese Daten beeinflussen auch meine Kommunikation mit der Geschäftsführung - ich kann konkrete Metriken zeigen, warum die ERP-Modernisierung dringend notwendig ist. Letztendlich zeigen mir die Monitoring-Dashboards täglich, dass ich mit veralteter Hardware ständig am Rand des Zusammenbruchs arbeite.",
+    "schema_position": "Ich bin Senior System Administrator und technischer Lead der IT-Abteilung. Mein Primärbereich ist die gesamte Server- und Infrastruktur-Verwaltung. Das bedeutet, ich bin verantwortlich für unsere VMware-Virtualisierungsplattform mit etwa 20 virtuellen Maschinen, die auf zwei physischen Servern laufen. Der kritischste Bereich ist die Verwaltung des ERP-Systems auf einem dedizierten Windows Server 2012 R2 mit SQL Server Datenbank - dieses System läuft 24/7 und darf nicht ausfallen. Daneben verantwortungs ich das MES-System für die Produktionssteuerung und die Anbindung zu den Fertigungsanlagen. Ein großer Bereich ist auch das Backup- und Disaster-Recovery-Management - wir haben eine hybride Lösung mit lokalen Backups und Azure Cloud. Ich kümmere mich um Netzwerk-Infrastruktur, Firewall-Konfiguration und VPN-Zugriffe. Außerdem bin ich verantwortlich für IT-Sicherheit und Compliance - das bedeutet Antivirus-Management, Security-Updates und Zugriffskontrolle. Ein weiterer wichtiger Bereich ist Monitoring und Incident Management - ich nutze Tools wie Zabbix und Grafana zur Überwachung und bin erste Eskalationsstufe bei kritischen Problemen. Kurz gesagt: Ich bin die zentrale Figur für alle technischen Infrastruktur-Entscheidungen in diesem Unternehmen.",
+    "schema_berufserfahrung_it": "Ich bin insgesamt etwa 15 Jahre in der IT-Branche tätig. Ich habe mit Netzwerk-Support angefangen, bin dann über verschiedene Stationen als System Administrator und IT-Leiter gewachsen. Bei dieser Organisation bin ich jetzt 8 Jahre - ich kam ursprünglich als System Administrator und wurde dann zum technischen Lead befördert. In diesen 8 Jahren habe ich die IT-Infrastruktur von Grund auf kennengelernt und bin mit allen Besonderheiten und Problemen dieses Unternehmens vertraut. Die lange Betriebszugehörigkeit hat auch den Nachteil, dass ich sehr viel implizites Wissen in meinem Kopf habe - vieles ist nicht dokumentiert, weil ich es einfach weiß. Das wird zum Problem, wenn ich im Urlaub bin oder wenn wir neue Leute ins Team holen. Meine Erfahrung hilft mir aber auch, die richtigen Entscheidungen zu treffen - ich kenne die Grenzen unserer veralteten Systeme sehr gut und weiß, was möglich ist und was nicht. Über die Jahre habe ich auch gelernt, mit den Herausforderungen umzugehen und Workarounds zu entwickeln, um das alte ERP-System am Leben zu erhalten - auch wenn das nicht ideal ist.",
+    "schema_systemkenntnis_selbsteinschaetzung": "Ich würde meine Kenntnisse mit einer 4 von 5 bewerten. Die Systeme, die ich täglich betreue - VMware, ERP, MES, Active Directory, Exchange, Azure - kenne ich sehr gut und kann schnell Probleme diagnostizieren und beheben. Ich verstehe die Zusammenhänge zwischen den verschiedenen Komponenten und weiß, wie Datenflüsse ablaufen. Das Problem ist aber die fehlende Dokumentation - vieles ist implizites Wissen in meinem Kopf. Wenn jemand anders ein Problem beheben muss oder neue Features implementieren soll, stoßen sie schnell auf Grenzen, weil die Konfigurationen nicht dokumentiert sind. Eine 5 würde ich nur geben, wenn die ganze Infrastruktur vollständig dokumentiert wäre und alle Prozesse transparant aufgeschrieben wären. Auch bei einigen älteren Systemen - wie bestimmten Access-Datenbanken, die von einzelnen Abteilungen gepflegt werden - habe ich nur oberflächliche Kenntnisse. Die Prozesslandschaft ist auch fragmentiert - es gibt viele manuelle Abläufe und Workarounds, die nicht optimal sind. Eine umfassende Dokumentation und Standardisierung würde mich auf eine echte 5 bringen.",
+    "schema_systeme_integriert": "Ehrlich gesagt haben wir ein großes Problem mit Daten-Silos. Die Systeme arbeiten nicht nahtlos zusammen - das ist einer der Hauptgründe, warum wir eine ERP-Modernisierung brauchen. VMware ist nur unsere Virtualisierungsplattform, auf der die Systeme laufen, aber es gibt kaum Integration zwischen den einzelnen Anwendungen. Das ERP-System und das MES-System sind nur lose gekoppelt - Daten werden oft manuell zwischen ihnen übertragen. Zum Beispiel: Produktionsaufträge aus dem ERP müssen ins MES exportiert werden, aber das geschieht über manuelle CSV-Exports und Reimporte. Das ist fehleranfällig und zeitaufwendig. Auch die Anbindung zu Azure ist begrenzt - wir nutzen Azure hauptsächlich für Backup und ein Business-Intelligence-Tool, aber es gibt keine echte hybride Integrationen. Die Buchhaltung nutzt ein separates System und muss Daten aus dem ERP manuell per Excel exportieren - das führt zu Inkonsistenzen und doppelter Datenpflege. Ein großes Problem sind auch die vielen Excel-Tabellen und Access-Datenbanken, die einzelne Abteilungen als Workarounds nutzen, weil das ERP nicht alle Anforderungen abdeckt. Das erzeugt noch mehr Daten-Silos. Eine echte Integration würde APIs und standardisierte Datenformate erfordern - das ist bei unserem alten ERP-System nicht möglich. Das ist ein großes Argument für die geplante Modernisierung zu einem modernen, cloud-basierten ERP-System mit besseren Integrationsmöglichkeiten.",
+    "schema_hardware_ausstattung": "Gerne. Unsere On-Premise-Infrastruktur besteht aus zwei physischen Servern - beide Dell PowerEdge R740 mit je 2x Intel Xeon Prozessoren, 256 GB RAM und redundanter SAS-Festplatte. Darauf läuft VMware vSphere 6.7 mit etwa 20 virtuellen Maschinen. Der kritischste Server ist unser ERP-Server auf Windows Server 2012 R2 mit SQL Server 2014 - das ist ein eigener dedizierter VM mit 16 GB RAM und 500 GB SSD. Das MES-System läuft auf einem separaten Linux-Server. Für Backups haben wir ein NetApp NAS mit etwa 20 TB Kapazität vor Ort. Bei Cloud-Diensten nutzen wir Microsoft Azure - dort haben wir ein Business-Intelligence-Tool gehostet und nutzen Azure Backup für Disaster Recovery. AWS nutzen wir nicht. Das Netzwerk ist ein klassisches Gigabit-Netzwerk mit mehreren VLANs - wir haben einen 1 GBit/s Internet-Anschluss, das ist allerdings für unsere Anforderungen manchmal knapp geworden. Unsere Firewall ist eine Fortinet FortiGate 200D. Bei Scannern haben wir einige ältere Fujitsu-Scanner in der Materialwirtschaft stehen, die Papierdokumente digitalisieren. Ein großes Problem ist die Heterogenität - viel alte Hardware aus verschiedenen Generationen, die schwer zu verwalten ist. Die gesamte Infrastruktur ist eigentlich überaltert und bräuchte eine Modernisierung.",
+    "schema_performance_skalierbarkeit": "Die Performance ist ein großes Problem. Unser ERP-System zeigt zu Stoßzeiten erhebliche Verzögerungen - besonders zwischen 8 und 10 Uhr morgens und am Freitagnachmittag. Die Antwortzeiten können dann von normal 2-3 Sekunden auf 10-15 Sekunden ansteigen. Das liegt hauptsächlich daran, dass die alte SQL Server 2014 Datenbank nicht optimal für die Datenmenge ausgelegt ist, die wir heute haben. Das MES-System hat ähnliche Probleme bei hoher Produktionsauslastung. Bei der Skalierbarkeit sind wir massiv limitiert. Wenn wir neue Module oder Funktionen ins ERP integrieren wollen, wird das System noch langsamer. Wir können auch nicht einfach mehr RAM oder CPU hinzufügen, weil die alte Hardware das nicht unterstützt. Mit Cloud-Services wie Azure haben wir bessere Skalierungsmöglichkeiten, aber unsere On-Premise-Infrastruktur ist an ihre Grenzen gestoßen. Ein großes Performance-Problem ist auch die Netzwerkauslastung - unser 1 GBit/s Internet-Anschluss ist manchmal zu knapp, speziell wenn größere Datenmengen zwischen Systemen übertragen werden oder die Homeoffice-Mitarbeiter VPN-Verbindungen nutzen. Auch die Backup-Prozesse verursachen tagsüber Performance-Probleme. Kurz gesagt: Das System ist nicht mehr skalierbar und die Performance wird mit jeder neuen Anforderung schlechter. Das ist ein weiterer Grund, warum wir dringend modernisieren müssen.",
+    "schema_dokumentarten_volumen": "Wir verarbeiten verschiedene Arten von Dokumenten. In der Produktion entstehen täglich Fertigungsberichte, Qualitätsprotokolle und Maschinenprotokolle - das sind meist PDF- oder Excel-Dateien zwischen 1-5 MB. Die Materialwirtschaft erzeugt Bestellungen, Lieferscheine und Lagerverwaltungsdaten - da sprechen wir von kleineren Dateien, aber großen Mengen. Die Buchhaltung hat Rechnungen, Lieferscheine und Bankdaten - auch wieder PDF und Excel. Ein großes Problem ist, dass viele dieser Dokumente noch in Papierform existieren und manuell eingescannt werden müssen. Wir haben alte Fujitsu-Scanner, die täglich etwa 500-1000 Seiten digitalisieren. Das erzeugt große TIFF- oder PDF-Dateien. Unser Gesamtdatenvolumen ist schwer zu beziffern, weil vieles fragmentiert ist. Im ERP-System selbst haben wir etwa 500 GB Datenbankgröße. In unseren Fileservern lagern wir etwa 2-3 TB an Dokumenten. Die Backups belegen dann nochmal das 3-4fache. Ein großes Problem ist die mangelnde Archivierungsstrategie - alte Dokumente werden nie gelöscht, nur immer wieder kopiert. Das führt zu redundanten Daten und enormem Speicheraufwand. Wenn wir modernisieren, brauchen wir ein echtes Document Management System mit automatisierter Archivierung und OCR-Verarbeitung. Aktuell kosten uns die Speicherkosten und die Verwaltung dieser fragmentierten Dokumentenlandschaft viel Zeit und Geld.",
+    "schema_compliance_anforderungen": "Ja, das ist ein wichtiges Thema. Zunächst müssen wir die DSGVO einhalten - das betrifft vor allem die Personendaten unserer Mitarbeiter und Kunden. Wir haben einen Datenschutzbeauftragten, der regelmäßig Audits durchführt. Alle Kundendaten müssen verschlüsselt gespeichert werden und wir müssen ein Datenschutz-Impact-Assessment durchgeführt haben. Ein großes Problem ist, dass unsere Excel-Dateien und Access-Datenbanken in den Abteilungen oft Personendaten enthalten, die nicht richtig geschützt sind - das ist ein Compliance-Risiko. Bei unseren Produktionsdaten gelten teilweise branchenspezifische Standards. Wir sind in der Maschinenbaubranche tätig und müssen ISO 9001 Zertifizierung einhalten - das bedeutet dokumentierte Qualitätsprozesse und Rückverfolgbarkeit. Die Fertigungsberichte und Qualitätsprotokolle müssen also 7 Jahre lang archiviert sein. Außerdem haben wir mit einigen internationalen Kunden Verträge, die spezifische IT-Sicherheitsanforderungen haben - zum Beispiel müssen bestimmte Daten in Deutschland bleiben, nicht in der Cloud. Das ist der Grund, warum wir noch viel On-Premise-Infrastruktur haben. Ein neues Thema ist die NIS2-Richtlinie - die Europäische Netzwerk- und Informationssicherheitsrichtlinie, die ab 2025 für größere Unternehmen gilt. Das wird uns zwingen, mehr in Cybersecurity zu investieren. Aktuell haben wir keine dedizierte Person für Compliance - das läuft alles nebenbei. Bei einer Modernisierung müssen diese Anforderungen berücksichtigt werden.",
+    "schema_identity_management": "Ja, wir nutzen Active Directory auf einem Windows Server 2012 R2 - das ist allerdings auch schon veraltet. Alle Mitarbeiter haben AD-Konten, die für den Netzwerk-Zugriff, E-Mail und den Zugriff auf Fileserver verwendet werden. Allerdings ist die Implementierung nicht optimal - wir haben nur eine OU-Struktur für Abteilungen, aber keine feingranulare Rechtevergabe. LDAP nutzen wir nicht, das wäre eine Option für die Zukunft. Single Sign-On haben wir leider nicht implementiert. Das bedeutet, dass Mitarbeiter sich separat beim ERP-System, beim MES-System, bei SharePoint und bei anderen Anwendungen anmelden müssen - jedes System hat seine eigenen Benutzeraccounts. Das ist nicht nur unbequem, sondern auch ein Sicherheitsrisiko, weil Passwörter oft notiert werden. Eine rollenbasierte Zugriffskontrolle existiert teilweise. Im ERP-System haben wir verschiedene Benutzerrollen wie Produktionsleiter, Einkäufer, Buchhalter - jede Rolle hat unterschiedliche Zugriffsrechte. Aber die Verwaltung ist aufwendig und nicht zentral - jedes System verwaltet seine Rollen einzeln. Bei den Fileservern arbeiten wir mit NTFS-Permissions auf Basis von AD-Gruppen, aber auch da gibt es Unordnung - es gibt zu viele Gruppen und die Dokumentation fehlt. Ein großes Problem ist das On- und Offboarding - wenn ein neuer Mitarbeiter kommt, muss ich manuell Accounts in AD, ERP, MES, Exchange etc. anlegen. Das dauert etwa 2 Stunden und ist fehleranfällig. Wenn ein Mitarbeiter geht, vergesse ich manchmal, alle Zugriffe zu deaktivieren - das ist ein Sicherheitsrisiko. Eine moderne Lösung würde Azure AD mit Single Sign-On, automatisiertes Identity Management und zentrale Governance bedeuten.",
+    "schema_vorhandene_apis": "Ja und nein - das ist ein gemischtes Bild. Unser ERP-System hat theoretisch eine REST-API, aber die ist sehr begrenzt und nicht gut dokumentiert. Sie wurde vor etwa 5 Jahren vom Hersteller eingebaut, aber nie richtig implementiert. Wir nutzen sie aktuell nur für eine Leseoperation - um Kundenstammdaten abzurufen. Das MES-System hat auch eine API, aber sie ist sehr proprietär und speziell auf die Anbindung zu den Maschinen ausgerichtet - nicht für externe Systeme gedacht. Das ist ein großes Problem: Die meisten Datenflüsse zwischen unseren Systemen sind immer noch manuell. Wir exportieren Daten als CSV aus dem ERP, passen sie in Excel an und importieren sie dann ins MES. Das ist zeitaufwendig und fehleranfällig. Für einen Fragebogen-Assistenten würde ich folgende Schnittstellen brauchen: Eine API zum Lesen von Kundendaten aus dem ERP, eine zum Schreiben von Prozessdaten zurück, und idealerweise eine Anbindung zum MES-System für Produktionsdaten. Das existiert alles nicht oder nur sehr fragmentarisch. Das ist einer der Gründe, warum ein modernes, cloud-basiertes ERP-System mit vernünftigen APIs so wichtig ist. Mit modernen Systemen wie SAP S/4HANA oder Microsoft Dynamics 365 hätte ich standardisierte REST-APIs mit OData-Support, die es viel einfacher macht, externe Systeme zu integrieren. Ein Fragebogen-Assistent könnte dann problemlos Daten abfragen und in Echtzeit verarbeiten.",
+    "schema_dokument_durchlaufzeit": "Das ist schwer zu beziffern, weil es sehr unterschiedliche Arten von Dokumenten gibt und unser Prozess nicht wirklich standardisiert ist. Nehmen wir ein Beispiel: Ein Fertigungsbericht aus der Produktion. Der wird um 17 Uhr erstellt, muss vom Schichtleiter genehmigt werden - das dauert normalerweise 30 Minuten bis 2 Stunden, weil die Genehmigung manuell erfolgt, oft per E-Mail oder persönlich. Wenn es Fragen gibt, muss der Bericht zurück zum Ersteller - das kann nochmal 1-2 Stunden dauern. Dann wird der genehmigte Bericht ins ERP eingescannt oder manuell eingegeben - das kostet nochmal 30 Minuten pro Dokument. Total: 3-5 Stunden für einen einfachen Bericht. Bei komplexeren Dokumenten wie Qualitätsprotokolle oder Änderungsanträgen kann es auch Tage dauern, wenn mehrere Abteilungen involviert sind. Ein großes Problem ist, dass es keine digitalen Workflows gibt - alles läuft über E-Mail, Excel und persönliche Abstimmungen. Wenn mehrere Personen Rückfragen haben, vervielfacht sich die Zeit. Ein Änderungsantrag kann durchaus 1-2 Wochen brauchen, bis er final genehmigt ist. Mit einem modernen Workflow-Management-System und automatisierten Genehmigungsprozessen könnte man das auf Stunden reduzieren. Das wäre ein großer Effizienzgewinn und würde auch die Fehlerquote senken."
+  },
+  "role": "it",
+  "role_candidates": [
+    {
+      "role": "it",
+      "score": 0.95
+    },
+    {
+      "role": "management",
+      "score": 0.15
+    },
+    {
+      "role": "fach",
+      "score": 0.0
+    }
+  ],
+  "classification_explanation": "Die Person ist eindeutig in der Rolle 'IT' zu klassifizieren, da sie als Senior System Administrator und technischer Verantwortlicher für die IT-Infrastruktur arbeitet. Sie hat technische Verantwortung für eine Vielzahl von Systemen wie VMware, ERP, MES, Active Directory und Azure. Ihre Ziele und Herausforderungen sind stark technisch orientiert, z.B. die Modernisierung der IT-Infrastruktur und die Reduktion manueller Aufgaben durch Automatisierung. Die Person trifft auch operative Entscheidungen basierend auf technischen KPIs und Monitoring-Daten. Obwohl sie auch mit anderen Abteilungen zusammenarbeitet und Projekte leitet, sind ihre Hauptaufgaben und Verantwortlichkeiten technischer Natur.",
+  "intake_questions": [
+    {
+      "id": "role_function",
+      "text": "Könnten Sie mir bitte beschreiben, welche Rolle oder Funktion Sie in Ihrem Team übernehmen?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "tasks_responsibility",
+      "text": "Kannst du mir mehr darüber erzählen, welche Aufgaben genau zu deiner Rolle als technischer Lead im Team gehören?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "process_goals",
+      "text": "Kannst du mir mehr darüber erzählen, welche Ziele du in deinem Arbeitsalltag verfolgst?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "problems_challenges",
+      "text": "Welche Art von Schwierigkeiten oder Hindernissen treten bei Ihnen auf, während Sie Ihre Aufgaben als technischer Lead erfüllen?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "collaboration",
+      "text": "Kannst du mir erzählen, mit wem oder welchen Teams du regelmäßig zusammenarbeitest?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "success_measurement",
+      "text": "Wie messen Sie den Erfolg Ihrer Arbeit im Hinblick auf die Ziele, die Sie erreicht haben?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "operational_decisions",
+      "text": "Können Sie mir beschreiben, wie Sie operativ entscheiden müssen, wenn es um die Nutzung der veralteten Hardware und Software geht?",
+      "type": "choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    },
+    {
+      "id": "technical_responsibility",
+      "text": "Könnten Sie mir mehr darüber erzählen, wie Ihre tägliche Arbeit aussieht und welche technischen Systeme Sie dabei betreuen?",
+      "type": "choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    },
+    {
+      "id": "project_leadership",
+      "text": "Können Sie mir mehr darüber erzählen, wie Ihre Entscheidungen in Bezug auf die Nutzung veralteter Systeme und die täglichen Überprüfungen der Monitoring-Dashboards beeinflussen?",
+      "type": "choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    }
+  ],
+  "role_questions": [
+    {
+      "id": "schema_position",
+      "field_id": "position",
+      "text": "Können Sie uns bitte genauer beschreiben, welche Rolle Sie in der IT-Abteilung innehaben und welchen Bereich Sie primär verantworten?",
+      "type": "text",
+      "required": true,
+      "theme_id": "themenfeld_a_allgemein",
+      "theme_name": "Allgemeine Fragen",
+      "hint": "Klärung der Expertise und des Verantwortungsbereichs",
+      "original_question": "Welche Position haben Sie in der IT-Abteilung?"
+    },
+    {
+      "id": "schema_berufserfahrung_it",
+      "field_id": "berufserfahrung_it",
+      "text": "Könnten Sie mir bitte sagen, wie viele Jahre Sie insgesamt in der IT-Branche tätig sind, insbesondere hier bei dieser Organisation?",
+      "type": "number",
+      "required": true,
+      "theme_id": "themenfeld_a_allgemein",
+      "theme_name": "Allgemeine Fragen",
+      "hint": "Schätzung der Systemkenntnis und Zuverlässigkeit der Antworten",
+      "original_question": "Seit wie vielen Jahren arbeiten Sie im IT-Bereich, speziell in dieser Organisation?",
+      "unit": "Jahre"
+    },
+    {
+      "id": "schema_systemkenntnis_selbsteinschaetzung",
+      "field_id": "systemkenntnis_selbsteinschaetzung",
+      "text": "Auf einer Skala von 1 bis 5, wobei 1 geringe Kenntnisse und 5 tiefe Kenntnisse bedeutet: Wie würden Sie Ihre Systemkenntnisse in Bezug auf unsere aktuelle Prozesslandschaft einschätzen?",
+      "type": "scale",
+      "required": true,
+      "theme_id": "themenfeld_a_allgemein",
+      "theme_name": "Allgemeine Fragen",
+      "hint": "Bewertung der Glaubwürdigkeit für technische Details",
+      "original_question": "Wie würden Sie Ihre Systemkenntnis der aktuellen Prozesslandschaft einschätzen?",
+      "scale_min": 1,
+      "scale_max": 5,
+      "scale_labels": {
+        "1": "Geringe Kenntnis",
+        "5": "Tiefe Kenntnis"
+      }
+    },
+    {
+      "id": "schema_systeme_integriert",
+      "field_id": "systeme_integriert",
+      "text": "Arbeiten Ihre verschiedenen Systeme wie VMware, ERP und Azure nahtlos zusammen oder gibt es hier isolierte Daten-Silos?",
+      "type": "choice",
+      "required": true,
+      "theme_id": "themenfeld_b_systemlandschaft",
+      "theme_name": "Aktuelle Systemlandschaft & Hardwareausstattung",
+      "hint": "Identifikation von Integrationshürden",
+      "original_question": "Sind diese Systeme miteinander integriert, oder arbeiten Sie mit Daten-Silos?",
+      "options": [
+        "Ja, integriert",
+        "Nein, Daten-Silos"
+      ]
+    },
+    {
+      "id": "schema_hardware_ausstattung",
+      "field_id": "hardware_ausstattung",
+      "text": "Können Sie mir einen Überblick darüber geben, welche Server und andere wichtige Hardware-Komponenten derzeit in Ihrem Unternehmen im Einsatz sind? Auch wäre es hilfreich zu wissen, ob Sie Cloud-Dienste wie AWS oder Azure nutzen und wie Ihre On-Premise-Infrastruktur aussieht. Welche Netzwerkkapazitäten stehen zur Verfügung und welche Scanner werden verwendet?",
+      "type": "text",
+      "required": true,
+      "theme_id": "themenfeld_b_systemlandschaft",
+      "theme_name": "Aktuelle Systemlandschaft & Hardwareausstattung",
+      "hint": "Server-Spezifikationen, Cloud-Infrastruktur (AWS, Azure, On-Premise), Scanner, Netzwerkkapazität",
+      "original_question": "Welche Hardware-Ausstattung ist vorhanden und muss berücksichtigt werden?"
+    },
+    {
+      "id": "schema_performance_skalierbarkeit",
+      "field_id": "performance_skalierbarkeit",
+      "text": "Wie schätzen Sie die aktuelle Performance und Skalierbarkeit der Systeme ein? Gibt es Bereiche, in denen Sie Schwierigkeiten feststellen oder wo Verbesserungen notwendig wären?",
+      "type": "text",
+      "required": true,
+      "theme_id": "themenfeld_b_systemlandschaft",
+      "theme_name": "Aktuelle Systemlandschaft & Hardwareausstattung",
+      "hint": "",
+      "original_question": "Wie bewerten Sie die aktuelle Performance und Skalierbarkeit der Systeme?"
+    },
+    {
+      "id": "schema_dokumentarten_volumen",
+      "field_id": "dokumentarten_volumen",
+      "text": "Um die aktuellen Herausforderungen besser zu verstehen, könnten Sie uns bitte sagen, welche Arten von Dokumenten in Ihrer Organisation verarbeitet werden und wie groß das durchschnittliche Datenvolumen ist? Diese Information hilft uns, die Speicheranforderungen und Performance-optimierungen gezielt anzugehen.",
+      "type": "text",
+      "required": true,
+      "theme_id": "themenfeld_c_datenmanagement",
+      "theme_name": "Datenmanagement & Datenschutz",
+      "hint": "Konkrete Mengenangaben für Einschätzung von Speicheranforderungen und Performance",
+      "original_question": "Welche Arten von Dokumenten werden verarbeitet, und wie groß ist das durchschnittliche Datenvolumen?"
+    },
+    {
+      "id": "schema_compliance_anforderungen",
+      "field_id": "compliance_anforderungen",
+      "text": "Wir haben ja schon über die Hardware und die Performance gesprochen. Nun möchte ich wissen, welche Datenschutz- und Compliance-Anforderungen ihr in eurem Unternehmen einhalten müsst? Gibt es spezifische Vorschriften oder Standards, an die wir uns halten müssen?",
+      "type": "multiple_choice",
+      "required": true,
+      "theme_id": "themenfeld_c_datenmanagement",
+      "theme_name": "Datenmanagement & Datenschutz",
+      "hint": "Sicherheitsanforderungen in die Systemarchitektur einplanen",
+      "original_question": "Welche Datenschutz- und Compliance-Anforderungen sind zu beachten?",
+      "options": [
+        "DSGVO",
+        "Branchenspezifische Vorgaben (z.B. GxP für Pharma, PCI-DSS für Zahlungen)",
+        "Interne Audit-Requirements",
+        "ISO-27001 oder ähnliche Standards",
+        "Revisionssicherheit / GoBD",
+        "Sonstiges"
+      ],
+      "multiple": true
+    },
+    {
+      "id": "schema_identity_management",
+      "field_id": "identity_management",
+      "text": "Könnten Sie mir erzählen, wie derzeit der Zugriff auf unsere Systeme und die Benutzerrechte verwaltet werden? Zum Beispiel, nutzen wir Active Directory oder LDAP, und gibt es Mechanismen wie Single Sign-On (SSO) oder rollenbasierte Zugriffskontrolle (RBAC), um den Datenzugriff zu steuern?",
+      "type": "text",
+      "required": true,
+      "theme_id": "themenfeld_c_datenmanagement",
+      "theme_name": "Datenmanagement & Datenschutz",
+      "hint": "Active Directory, LDAP, Single Sign-On (SSO), rollenbasierte Zugriffskontrolle (RBAC)",
+      "original_question": "Wie werden Zugriffe und Benutzerrechte derzeit verwaltet (Identity Management)?"
+    },
+    {
+      "id": "schema_vorhandene_apis",
+      "field_id": "vorhandene_apis",
+      "text": "Gibt es in Ihrem System bereits APIs oder Schnittstellen, über die der Fragebogen-Assistent Daten austauschen könnte?",
+      "type": "choice",
+      "required": true,
+      "theme_id": "themenfeld_d_automatisierung",
+      "theme_name": "Automatisierungspotenziale & Systemgrenzen",
+      "hint": "Machbarkeit direkter Systemintegration",
+      "original_question": "Gibt es bestehende APIs oder Schnittstellen, über die der Fragebogen-Assistent Daten austauschen könnte?",
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    },
+    {
+      "id": "schema_dokument_durchlaufzeit",
+      "field_id": "dokument_durchlaufzeit",
+      "text": "Können Sie mir ungefähr sagen, wie lange es normalerweise dauert, bis ein Dokument durch den gesamten Prozess läuft – also von der Erstellung bis zur finalen Genehmigung oder Ablehnung? Gerade auch mit Rückfragen und möglichen Korrekturen.",
+      "type": "number",
+      "required": true,
+      "theme_id": "themenfeld_d_automatisierung",
+      "theme_name": "Automatisierungspotenziale & Systemgrenzen",
+      "hint": "Baseline für Effektivitätsmessung",
+      "original_question": "Wie lange dauert die typische Durchlaufzeit eines Dokumentes durch den aktuellen Prozess (mit Rückfragen)?",
+      "unit": "Stunden/Tage"
+    }
+  ],
+  "schema_fields": {
+    "position": "Ich bin Senior System Administrator und technischer Lead der IT-Abteilung. Mein Primärbereich ist die gesamte Server- und Infrastruktur-Verwaltung. Das bedeutet, ich bin verantwortlich für unsere VMware-Virtualisierungsplattform mit etwa 20 virtuellen Maschinen, die auf zwei physischen Servern laufen. Der kritischste Bereich ist die Verwaltung des ERP-Systems auf einem dedizierten Windows Server 2012 R2 mit SQL Server Datenbank - dieses System läuft 24/7 und darf nicht ausfallen. Daneben verantwortungs ich das MES-System für die Produktionssteuerung und die Anbindung zu den Fertigungsanlagen. Ein großer Bereich ist auch das Backup- und Disaster-Recovery-Management - wir haben eine hybride Lösung mit lokalen Backups und Azure Cloud. Ich kümmere mich um Netzwerk-Infrastruktur, Firewall-Konfiguration und VPN-Zugriffe. Außerdem bin ich verantwortlich für IT-Sicherheit und Compliance - das bedeutet Antivirus-Management, Security-Updates und Zugriffskontrolle. Ein weiterer wichtiger Bereich ist Monitoring und Incident Management - ich nutze Tools wie Zabbix und Grafana zur Überwachung und bin erste Eskalationsstufe bei kritischen Problemen. Kurz gesagt: Ich bin die zentrale Figur für alle technischen Infrastruktur-Entscheidungen in diesem Unternehmen.",
+    "hauptaufgaben_it": [
+      "Server- und Infrastruktur-Verwaltung",
+      "Verwaltung des ERP-Systems",
+      "MES-System für die Produktionssteuerung",
+      "Backup- und Disaster-Recovery-Management",
+      "Netzwerk-Infrastruktur, Firewall-Konfiguration und VPN-Zugriffe",
+      "IT-Sicherheit und Compliance",
+      "Monitoring und Incident Management"
+    ],
+    "relevante_systeme": [
+      "VMware-Virtualisierungsplattform",
+      "ERP-System auf Windows Server 2012 R2 mit SQL Server Datenbank",
+      "MES-System für die Produktionssteuerung",
+      "Fertigungsanlagen",
+      "Azure Cloud",
+      "Zabbix und Grafana"
+    ],
+    "dms_erp_systeme": [
+      "ERP-System auf Windows Server 2012 R2 mit SQL Server Datenbank"
+    ],
+    "berufserfahrung_it": "Ich bin insgesamt etwa 15 Jahre in der IT-Branche tätig. Ich habe mit Netzwerk-Support angefangen, bin dann über verschiedene Stationen als System Administrator und IT-Leiter gewachsen. Bei dieser Organisation bin ich jetzt 8 Jahre - ich kam ursprünglich als System Administrator und wurde dann zum technischen Lead befördert. In diesen 8 Jahren habe ich die IT-Infrastruktur von Grund auf kennengelernt und bin mit allen Besonderheiten und Problemen dieses Unternehmens vertraut. Die lange Betriebszugehörigkeit hat auch den Nachteil, dass ich sehr viel implizites Wissen in meinem Kopf habe - vieles ist nicht dokumentiert, weil ich es einfach weiß. Das wird zum Problem, wenn ich im Urlaub bin oder wenn wir neue Leute ins Team holen. Meine Erfahrung hilft mir aber auch, die richtigen Entscheidungen zu treffen - ich kenne die Grenzen unserer veralteten Systeme sehr gut und weiß, was möglich ist und was nicht. Über die Jahre habe ich auch gelernt, mit den Herausforderungen umzugehen und Workarounds zu entwickeln, um das alte ERP-System am Leben zu erhalten - auch wenn das nicht ideal ist.",
+    "systemkenntnis_selbsteinschaetzung": "Ich würde meine Kenntnisse mit einer 4 von 5 bewerten. Die Systeme, die ich täglich betreue - VMware, ERP, MES, Active Directory, Exchange, Azure - kenne ich sehr gut und kann schnell Probleme diagnostizieren und beheben. Ich verstehe die Zusammenhänge zwischen den verschiedenen Komponenten und weiß, wie Datenflüsse ablaufen. Das Problem ist aber die fehlende Dokumentation - vieles ist implizites Wissen in meinem Kopf. Wenn jemand anders ein Problem beheben muss oder neue Features implementieren soll, stoßen sie schnell auf Grenzen, weil die Konfigurationen nicht dokumentiert sind. Eine 5 würde ich nur geben, wenn die ganze Infrastruktur vollständig dokumentiert wäre und alle Prozesse transparant aufgeschrieben wären. Auch bei einigen älteren Systemen - wie bestimmten Access-Datenbanken, die von einzelnen Abteilungen gepflegt werden - habe ich nur oberflächliche Kenntnisse. Die Prozesslandschaft ist auch fragmentiert - es gibt viele manuelle Abläufe und Workarounds, die nicht optimal sind. Eine umfassende Dokumentation und Standardisierung würde mich auf eine echte 5 bringen.",
+    "systeme_integriert": "Ehrlich gesagt haben wir ein großes Problem mit Daten-Silos. Die Systeme arbeiten nicht nahtlos zusammen - das ist einer der Hauptgründe, warum wir eine ERP-Modernisierung brauchen. VMware ist nur unsere Virtualisierungsplattform, auf der die Systeme laufen, aber es gibt kaum Integration zwischen den einzelnen Anwendungen. Das ERP-System und das MES-System sind nur lose gekoppelt - Daten werden oft manuell zwischen ihnen übertragen. Zum Beispiel: Produktionsaufträge aus dem ERP müssen ins MES exportiert werden, aber das geschieht über manuelle CSV-Exports und Reimporte. Das ist fehleranfällig und zeitaufwendig. Auch die Anbindung zu Azure ist begrenzt - wir nutzen Azure hauptsächlich für Backup und ein Business-Intelligence-Tool, aber es gibt keine echte hybride Integrationen. Die Buchhaltung nutzt ein separates System und muss Daten aus dem ERP manuell per Excel exportieren - das führt zu Inkonsistenzen und doppelter Datenpflege. Ein großes Problem sind auch die vielen Excel-Tabellen und Access-Datenbanken, die einzelne Abteilungen als Workarounds nutzen, weil das ERP nicht alle Anforderungen abdeckt. Das erzeugt noch mehr Daten-Silos. Eine echte Integration würde APIs und standardisierte Datenformate erfordern - das ist bei unserem alten ERP-System nicht möglich. Das ist ein großes Argument für die geplante Modernisierung zu einem modernen, cloud-basierten ERP-System mit besseren Integrationsmöglichkeiten.",
+    "datenaustausch_silos": "Die Systeme arbeiten nicht nahtlos zusammen. Daten werden oft manuell zwischen ihnen übertragen. Zum Beispiel: Produktionsaufträge aus dem ERP müssen ins MES exportiert werden, aber das geschieht über manuelle CSV-Exports und Reimporte. Die Buchhaltung nutzt ein separates System und muss Daten aus dem ERP manuell per Excel exportieren - das führt zu Inkonsistenzen und doppelter Datenpflege.",
+    "hardware_ausstattung": "Gerne. Unsere On-Premise-Infrastruktur besteht aus zwei physischen Servern - beide Dell PowerEdge R740 mit je 2x Intel Xeon Prozessoren, 256 GB RAM und redundanter SAS-Festplatte. Darauf läuft VMware vSphere 6.7 mit etwa 20 virtuellen Maschinen. Der kritischste Server ist unser ERP-Server auf Windows Server 2012 R2 mit SQL Server 2014 - das ist ein eigener dedizierter VM mit 16 GB RAM und 500 GB SSD. Das MES-System läuft auf einem separaten Linux-Server. Für Backups haben wir ein NetApp NAS mit etwa 20 TB Kapazität vor Ort. Bei Cloud-Diensten nutzen wir Microsoft Azure - dort haben wir ein Business-Intelligence-Tool gehostet und nutzen Azure Backup für Disaster Recovery. AWS nutzen wir nicht. Das Netzwerk ist ein klassisches Gigabit-Netzwerk mit mehreren VLANs - wir haben einen 1 GBit/s Internet-Anschluss, das ist allerdings für unsere Anforderungen manchmal knapp geworden. Unsere Firewall ist eine Fortinet FortiGate 200D. Bei Scannern haben wir einige ältere Fujitsu-Scanner in der Materialwirtschaft stehen, die Papierdokumente digitalisieren. Ein großes Problem ist die Heterogenität - viel alte Hardware aus verschiedenen Generationen, die schwer zu verwalten ist. Die gesamte Infrastruktur ist eigentlich überaltert und bräuchte eine Modernisierung.",
+    "performance_skalierbarkeit": "Die Performance ist ein großes Problem. Unser ERP-System zeigt zu Stoßzeiten erhebliche Verzögerungen - besonders zwischen 8 und 10 Uhr morgens und am Freitagnachmittag. Die Antwortzeiten können dann von normal 2-3 Sekunden auf 10-15 Sekunden ansteigen. Das liegt hauptsächlich daran, dass die alte SQL Server 2014 Datenbank nicht optimal für die Datenmenge ausgelegt ist, die wir heute haben. Das MES-System hat ähnliche Probleme bei hoher Produktionsauslastung. Bei der Skalierbarkeit sind wir massiv limitiert. Wenn wir neue Module oder Funktionen ins ERP integrieren wollen, wird das System noch langsamer. Wir können auch nicht einfach mehr RAM oder CPU hinzufügen, weil die alte Hardware das nicht unterstützt. Mit Cloud-Services wie Azure haben wir bessere Skalierungsmöglichkeiten, aber unsere On-Premise-Infrastruktur ist an ihre Grenzen gestoßen. Ein großes Performance-Problem ist auch die Netzwerkauslastung - unser 1 GBit/s Internet-Anschluss ist manchmal zu knapp, speziell wenn größere Datenmengen zwischen Systemen übertragen werden oder die Homeoffice-Mitarbeiter VPN-Verbindungen nutzen. Auch die Backup-Prozesse verursachen tagsüber Performance-Probleme. Kurz gesagt: Das System ist nicht mehr skalierbar und die Performance wird mit jeder neuen Anforderung schlechter. Das ist ein weiterer Grund, warum wir dringend modernisieren müssen.",
+    "dokumentarten_volumen": "Wir verarbeiten verschiedene Arten von Dokumenten. In der Produktion entstehen täglich Fertigungsberichte, Qualitätsprotokolle und Maschinenprotokolle - das sind meist PDF- oder Excel-Dateien zwischen 1-5 MB. Die Materialwirtschaft erzeugt Bestellungen, Lieferscheine und Lagerverwaltungsdaten - da sprechen wir von kleineren Dateien, aber großen Mengen. Die Buchhaltung hat Rechnungen, Lieferscheine und Bankdaten - auch wieder PDF und Excel. Ein großes Problem ist, dass viele dieser Dokumente noch in Papierform existieren und manuell eingescannt werden müssen. Wir haben alte Fujitsu-Scanner, die täglich etwa 500-1000 Seiten digitalisieren. Das erzeugt große TIFF- oder PDF-Dateien. Unser Gesamtdatenvolumen ist schwer zu beziffern, weil vieles fragmentiert ist. Im ERP-System selbst haben wir etwa 500 GB Datenbankgröße. In unseren Fileservern lagern wir etwa 2-3 TB an Dokumenten. Die Backups belegen dann nochmal das 3-4fache. Ein großes Problem ist die mangelnde Archivierungsstrategie - alte Dokumente werden nie gelöscht, nur immer wieder kopiert. Das führt zu redundanten Daten und enormem Speicheraufwand. Wenn wir modernisieren, brauchen wir ein echtes Document Management System mit automatisierter Archivierung und OCR-Verarbeitung. Aktuell kosten uns die Speicherkosten und die Verwaltung dieser fragmentierten Dokumentenlandschaft viel Zeit und Geld.",
+    "compliance_anforderungen": "Ja, das ist ein wichtiges Thema. Zunächst müssen wir die DSGVO einhalten - das betrifft vor allem die Personendaten unserer Mitarbeiter und Kunden. Wir haben einen Datenschutzbeauftragten, der regelmäßig Audits durchführt. Alle Kundendaten müssen verschlüsselt gespeichert werden und wir müssen ein Datenschutz-Impact-Assessment durchgeführt haben. Ein großes Problem ist, dass unsere Excel-Dateien und Access-Datenbanken in den Abteilungen oft Personendaten enthalten, die nicht richtig geschützt sind - das ist ein Compliance-Risiko. Bei unseren Produktionsdaten gelten teilweise branchenspezifische Standards. Wir sind in der Maschinenbaubranche tätig und müssen ISO 9001 Zertifizierung einhalten - das bedeutet dokumentierte Qualitätsprozesse und Rückverfolgbarkeit. Die Fertigungsberichte und Qualitätsprotokolle müssen also 7 Jahre lang archiviert sein. Außerdem haben wir mit einigen internationalen Kunden Verträge, die spezifische IT-Sicherheitsanforderungen haben - zum Beispiel müssen bestimmte Daten in Deutschland bleiben, nicht in der Cloud. Das ist der Grund, warum wir noch viel On-Premise-Infrastruktur haben. Ein neues Thema ist die NIS2-Richtlinie - die Europäische Netzwerk- und Informationssicherheitsrichtlinie, die ab 2025 für größere Unternehmen gilt. Das wird uns zwingen, mehr in Cybersecurity zu investieren. Aktuell haben wir keine dedizierte Person für Compliance - das läuft alles nebenbei. Bei einer Modernisierung müssen diese Anforderungen berücksichtigt werden.",
+    "identity_management": "Ja, wir nutzen Active Directory auf einem Windows Server 2012 R2 - das ist allerdings auch schon veraltet. Alle Mitarbeiter haben AD-Konten, die für den Netzwerk-Zugriff, E-Mail und den Zugriff auf Fileserver verwendet werden. Allerdings ist die Implementierung nicht optimal - wir haben nur eine OU-Struktur für Abteilungen, aber keine feingranulare Rechtevergabe. LDAP nutzen wir nicht, das wäre eine Option für die Zukunft. Single Sign-On haben wir leider nicht implementiert. Das bedeutet, dass Mitarbeiter sich separat beim ERP-System, beim MES-System, bei SharePoint und bei anderen Anwendungen anmelden müssen - jedes System hat seine eigenen Benutzeraccounts. Das ist nicht nur unbequem, sondern auch ein Sicherheitsrisiko, weil Passwörter oft notiert werden. Eine rollenbasierte Zugriffskontrolle existiert teilweise. Im ERP-System haben wir verschiedene Benutzerrollen wie Produktionsleiter, Einkäufer, Buchhalter - jede Rolle hat unterschiedliche Zugriffsrechte. Aber die Verwaltung ist aufwendig und nicht zentral - jedes System verwaltet seine Rollen einzeln. Bei den Fileservern arbeiten wir mit NTFS-Permissions auf Basis von AD-Gruppen, aber auch da gibt es Unordnung - es gibt zu viele Gruppen und die Dokumentation fehlt. Ein großes Problem ist das On- und Offboarding - wenn ein neuer Mitarbeiter kommt, muss ich manuell Accounts in AD, ERP, MES, Exchange etc. anlegen. Das dauert etwa 2 Stunden und ist fehleranfällig. Wenn ein Mitarbeiter geht, vergesse ich manchmal, alle Zugriffe zu deaktivieren - das ist ein Sicherheitsrisiko. Eine moderne Lösung würde Azure AD mit Single Sign-On, automatisiertes Identity Management und zentrale Governance bedeuten.",
+    "automatisierbare_schritte": "Anlegen von Accounts in AD, ERP, MES, Exchange etc. für Onboarding",
+    "technische_huerden": "Veraltete Technologie (Windows Server 2012 R2), keine Single Sign-On Implementierung, manuelle Verwaltung der Benutzeraccounts",
+    "vorhandene_apis": "Ja und nein - das ist ein gemischtes Bild. Unser ERP-System hat theoretisch eine REST-API, aber die ist sehr begrenzt und nicht gut dokumentiert. Sie wurde vor etwa 5 Jahren vom Hersteller eingebaut, aber nie richtig implementiert. Wir nutzen sie aktuell nur für eine Leseoperation - um Kundenstammdaten abzurufen. Das MES-System hat auch eine API, aber sie ist sehr proprietär und speziell auf die Anbindung zu den Maschinen ausgerichtet - nicht für externe Systeme gedacht. Das ist ein großes Problem: Die meisten Datenflüsse zwischen unseren Systemen sind immer noch manuell. Wir exportieren Daten als CSV aus dem ERP, passen sie in Excel an und importieren sie dann ins MES. Das ist zeitaufwendig und fehleranfällig. Für einen Fragebogen-Assistenten würde ich folgende Schnittstellen brauchen: Eine API zum Lesen von Kundendaten aus dem ERP, eine zum Schreiben von Prozessdaten zurück, und idealerweise eine Anbindung zum MES-System für Produktionsdaten. Das existiert alles nicht oder nur sehr fragmentarisch. Das ist einer der Gründe, warum ein modernes, cloud-basiertes ERP-System mit vernünftigen APIs so wichtig ist. Mit modernen Systemen wie SAP S/4HANA oder Microsoft Dynamics 365 hätte ich standardisierte REST-APIs mit OData-Support, die es viel einfacher macht, externe Systeme zu integrieren. Ein Fragebogen-Assistent könnte dann problemlos Daten abfragen und in Echtzeit verarbeiten.",
+    "integrationsschnittstellen": "REST-API",
+    "dokument_durchlaufzeit": "Das ist schwer zu beziffern, weil es sehr unterschiedliche Arten von Dokumenten gibt und unser Prozess nicht wirklich standardisiert ist. Nehmen wir ein Beispiel: Ein Fertigungsbericht aus der Produktion. Der wird um 17 Uhr erstellt, muss vom Schichtleiter genehmigt werden - das dauert normalerweise 30 Minuten bis 2 Stunden, weil die Genehmigung manuell erfolgt, oft per E-Mail oder persönlich. Wenn es Fragen gibt, muss der Bericht zurück zum Ersteller - das kann nochmal 1-2 Stunden dauern. Dann wird der genehmigte Bericht ins ERP eingescannt oder manuell eingegeben - das kostet nochmal 30 Minuten pro Dokument. Total: 3-5 Stunden für einen einfachen Bericht. Bei komplexeren Dokumenten wie Qualitätsprotokolle oder Änderungsanträgen kann es auch Tage dauern, wenn mehrere Abteilungen involviert sind. Ein großes Problem ist, dass es keine digitalen Workflows gibt - alles läuft über E-Mail, Excel und persönliche Abstimmungen. Wenn mehrere Personen Rückfragen haben, vervielfacht sich die Zeit. Ein Änderungsantrag kann durchaus 1-2 Wochen brauchen, bis er final genehmigt ist. Mit einem modernen Workflow-Management-System und automatisierten Genehmigungsprozessen könnte man das auf Stunden reduzieren. Das wäre ein großer Effizienzgewinn und würde auch die Fehlerquote senken."
+  },
+  "uploaded_files": [
+    {
+      "filename": "Fachabteilung_Rolle_Prozessdokumentation.txt",
+      "filepath": "uploads\\Fachabteilung_Rolle_Prozessdokumentation.txt",
+      "size": 11955
+    },
+    {
+      "filename": "IT_Rolle_Prozessdokumentation.txt",
+      "filepath": "uploads\\IT_Rolle_Prozessdokumentation.txt",
+      "size": 6291
+    },
+    {
+      "filename": "Management_Rolle_Prozessdokumentation.txt",
+      "filepath": "uploads\\Management_Rolle_Prozessdokumentation.txt",
+      "size": 8967
+    }
+  ],
+  "completed_interviews": [],
+  "current_interview_index": 0,
+  "_meta": {
+    "session_id": "session_1764852897605_2d72sqptg",
+    "saved_at": "2025-12-04T14:02:44.184769",
+    "version": "1.0"
+  },
+  "session_name": "Demo-Interview"
+}

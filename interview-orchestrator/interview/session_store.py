@@ -174,8 +174,24 @@ class SessionStore:
                         'management': 'Management'
                     }.get(r, r) for r in completed_roles]
                     
+                    # Session-Name: Verwende gespeicherten Namen oder generiere einen
+                    session_name = data.get('session_name')
+                    if not session_name:
+                        # Generiere einen lesbaren Namen aus dem Datum
+                        if saved_at:
+                            try:
+                                from datetime import datetime
+                                dt = datetime.fromisoformat(saved_at.replace('Z', '+00:00'))
+                                date_str = dt.strftime('%d.%m.%Y')
+                                session_name = f"Interview vom {date_str}"
+                            except:
+                                session_name = f"Interview {session_id[:15]}"
+                        else:
+                            session_name = f"Interview {session_id[:15]}"
+                    
                     sessions.append({
                         'session_id': session_id,
+                        'session_name': session_name,
                         'saved_at': saved_at,
                         'last_activity': saved_at,  # Für Frontend-Kompatibilität
                         'phase': data.get('phase', 'unknown'),
@@ -212,7 +228,7 @@ class SessionStore:
             'classification_explanation', 'role_low_confidence',
             'intake_questions', 'role_questions', 'clarifying_questions',
             'schema_fields', 'uploaded_files', 'document_summary',
-            'role_announced',
+            'role_announced', 'session_name',
             # Multi-Rollen-Support
             'completed_interviews', 'current_interview_index'
         ]
