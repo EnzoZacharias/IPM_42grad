@@ -1,0 +1,136 @@
+{
+  "phase": "role_specific",
+  "answers": {
+    "role_function": "serververwaltung",
+    "tasks_responsibility": "Netzwerk am server",
+    "process_goals": "Server",
+    "problems_challenges": "Server",
+    "collaboration": "Server",
+    "success_measurement": "Server",
+    "operational_decisions": "Server",
+    "technical_responsibility": "Server",
+    "project_leadership": "Server"
+  },
+  "role": "it",
+  "role_candidates": [
+    {
+      "role": "it",
+      "score": 1.0
+    },
+    {
+      "role": "fach",
+      "score": 0.0
+    },
+    {
+      "role": "management",
+      "score": 0.0
+    }
+  ],
+  "classification_explanation": "Die Person hat eine klare technische Verantwortung und ist für die Serververwaltung zuständig, was typische Aufgaben eines IT-Administrators sind. Alle Antworten beziehen sich auf technische Systeme oder Software, was eindeutig auf die Rolle 'it' hinweist.",
+  "intake_questions": [
+    {
+      "id": "role_function",
+      "text": "Könnten Sie mir bitte erzählen, wie Ihr Arbeitsalltag in Ihrem Unternehmen aussieht?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "tasks_responsibility",
+      "text": "Können Sie mir genauer beschreiben, welche Aufgaben genau zur Verwaltung der Server gehören und was alles zu Ihrer Verantwortung in diesem Bereich gehört?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "process_goals",
+      "text": "Welche Ziele verfolgen Sie bei der Verwaltung der Server und des Netzwerks?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "problems_challenges",
+      "text": "Könnten Sie mir einige Beispiele für Probleme oder Herausforderungen nennen, die Sie in Ihrem Alltag bei der Verwaltung von Servern und Netzwerken erlebt haben?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "collaboration",
+      "text": "Mit wem tauschen Sie sich im Zusammenhang mit der Verwaltung von Servern und Netzwerken regelmäßig aus?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "success_measurement",
+      "text": "Wie erkennen Sie, dass Ihre Bemühungen bei der Verwaltung der Server erfolgreich sind?",
+      "type": "text",
+      "required": true
+    },
+    {
+      "id": "operational_decisions",
+      "text": "Wie gehen Sie in Situationen vor, in denen Sie sich für bestimmte Maßnahmen zur Lösung von Problemen mit den Servern entscheiden müssen?",
+      "type": "choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    },
+    {
+      "id": "technical_responsibility",
+      "text": "Können Sie mir mehr darüber erzählen, wie Ihre Aufgaben im Umgang mit den Servern und Netzwerken aussehen?",
+      "type": "choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    },
+    {
+      "id": "project_leadership",
+      "text": "Könnten Sie mir mehr über die Zusammenarbeit in Ihrem Team oder bei Ihren Projekten erzählen?",
+      "type": "choice",
+      "required": true,
+      "options": [
+        "Ja",
+        "Nein"
+      ]
+    }
+  ],
+  "role_questions": [
+    {
+      "id": "schema_position",
+      "field_id": "position",
+      "text": "Können Sie mir bitte erzählen, welche Rolle oder Position Sie innerhalb der IT-Abteilung innehaben?",
+      "type": "text",
+      "required": true,
+      "theme_id": "themenfeld_a_allgemein",
+      "theme_name": "Allgemeine Fragen",
+      "hint": "Klärung der Expertise und des Verantwortungsbereichs",
+      "original_question": "Welche Position haben Sie in der IT-Abteilung?"
+    }
+  ],
+  "schema_fields": {},
+  "uploaded_files": [
+    {
+      "filename": "Fachabteilung_Rolle_Prozessdokumentation.txt",
+      "filepath": "uploads\\Fachabteilung_Rolle_Prozessdokumentation.txt",
+      "size": 11955
+    },
+    {
+      "filename": "IT_Rolle_Prozessdokumentation.txt",
+      "filepath": "uploads\\IT_Rolle_Prozessdokumentation.txt",
+      "size": 6291
+    },
+    {
+      "filename": "Management_Rolle_Prozessdokumentation.txt",
+      "filepath": "uploads\\Management_Rolle_Prozessdokumentation.txt",
+      "size": 8967
+    }
+  ],
+  "completed_interviews": [],
+  "current_interview_index": 0,
+  "_meta": {
+    "session_id": "session_1764926935972_u2ar45oi6",
+    "saved_at": "2025-12-05T10:30:19.033252",
+    "version": "1.0"
+  }
+}
