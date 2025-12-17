@@ -42,7 +42,12 @@ interface ChatMessage {
   isStreaming?: boolean;
 }
 
-type AppView = "loading" | "sessionRestore" | "roleSelection" | "projectName" | "chat";
+type AppView =
+  | "loading"
+  | "sessionRestore"
+  | "roleSelection"
+  | "projectName"
+  | "chat";
 
 // Project name storage
 function getStoredProjectName(): string {
@@ -142,7 +147,11 @@ function App() {
     try {
       const response = await getSessions();
 
-      if (response.success && response.sessions && response.sessions.length > 0) {
+      if (
+        response.success &&
+        response.sessions &&
+        response.sessions.length > 0
+      ) {
         const currentSessionId = getSessionId();
         const currentSession = response.sessions.find(
           (s) => s.session_id === currentSessionId
@@ -190,7 +199,7 @@ function App() {
   function handleSaveProjectName() {
     const name = projectNameInput.trim();
     if (!name) return;
-    
+
     setStoredProjectName(name);
     setProjectName(name);
     setCurrentView("roleSelection");
@@ -208,7 +217,9 @@ function App() {
         setSessionId(sessionId);
 
         // Restore session name from saved sessions
-        const sessionInfo = savedSessions.find(s => s.session_id === sessionId);
+        const sessionInfo = savedSessions.find(
+          (s) => s.session_id === sessionId
+        );
         if (sessionInfo?.session_name) {
           setProjectName(sessionInfo.session_name);
           setStoredProjectName(sessionInfo.session_name);
@@ -243,9 +254,13 @@ function App() {
 
           // Prüfe ob die aktuelle Frage bereits in der History ist (letzte unbeantwortete Frage)
           const currentQ = response.current_question || response.question;
-          const lastHistoryEntry = response.history[response.history.length - 1];
-          const isCurrentQuestionInHistory = currentQ && lastHistoryEntry && 
-            lastHistoryEntry.question === currentQ.text && !lastHistoryEntry.answer;
+          const lastHistoryEntry =
+            response.history[response.history.length - 1];
+          const isCurrentQuestionInHistory =
+            currentQ &&
+            lastHistoryEntry &&
+            lastHistoryEntry.question === currentQ.text &&
+            !lastHistoryEntry.answer;
 
           // Füge aktuelle Frage nur hinzu, wenn sie noch nicht in der History ist
           if (currentQ && !isCurrentQuestionInHistory) {
@@ -355,9 +370,9 @@ function App() {
       const response = await fetch("/api/next-question-stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           session_id: sessionId,
-          preset_role: role === "auto" ? undefined : role 
+          preset_role: role === "auto" ? undefined : role,
         }),
       });
 
@@ -543,7 +558,9 @@ function App() {
                   ? "(unsicher)"
                   : "(sicher)";
                 addSystemMessage(
-                  `🎯 Rolle identifiziert: ${data.status.role_label || data.status.role} ${confidence}`
+                  `🎯 Rolle identifiziert: ${
+                    data.status.role_label || data.status.role
+                  } ${confidence}`
                 );
               } else if (data.type === "complete") {
                 setProcessStatus(null);
@@ -575,7 +592,7 @@ function App() {
 
       // Zeige verzögert die nächste Frage an (nach Rollenklassifizierung)
       if (pendingQuestion) {
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise((resolve) => setTimeout(resolve, 800));
         setStreamingText("");
         setCurrentQuestion(pendingQuestion);
         addAssistantMessage(pendingQuestion.text, pendingQuestion.id);
@@ -606,16 +623,20 @@ function App() {
         // Erst Rollenklassifizierung anzeigen (falls vorhanden)
         if (response.role_classified && response.status?.role) {
           addSystemMessage(
-            `🎯 Rolle identifiziert: ${response.status.role_label || response.status.role}`
+            `🎯 Rolle identifiziert: ${
+              response.status.role_label || response.status.role
+            }`
           );
           // Kurze Verzögerung bevor die nächste Frage erscheint
-          await new Promise(resolve => setTimeout(resolve, 800));
+          await new Promise((resolve) => setTimeout(resolve, 800));
         }
 
         if (response.completed || !response.question) {
           setIsInterviewComplete(true);
           setCurrentQuestion(null);
-          addAssistantMessage("🎉 Vielen Dank! Das Interview ist abgeschlossen.");
+          addAssistantMessage(
+            "🎉 Vielen Dank! Das Interview ist abgeschlossen."
+          );
         } else {
           setCurrentQuestion(response.question);
           addAssistantMessage(response.question.text, response.question.id);
@@ -660,7 +681,9 @@ function App() {
       const response = await uploadFile(file);
 
       if (response.success) {
-        addAssistantMessage(`✅ "${response.file?.filename || file.name}" hochgeladen.`);
+        addAssistantMessage(
+          `✅ "${response.file?.filename || file.name}" hochgeladen.`
+        );
         await loadUploadedFiles();
       } else {
         addAssistantMessage(`❌ Fehler: ${response.message || "Unbekannt"}`);
@@ -688,7 +711,9 @@ function App() {
 
   // Reset interview
   async function handleResetInterview() {
-    if (!confirm("Interview wirklich neu starten? Alle Antworten gehen verloren.")) {
+    if (
+      !confirm("Interview wirklich neu starten? Alle Antworten gehen verloren.")
+    ) {
       return;
     }
 
@@ -702,7 +727,13 @@ function App() {
       const response = await resetInterview();
 
       if (response.success) {
-        setMessages([{ id: Date.now(), role: "system", content: "Interview neu gestartet." }]);
+        setMessages([
+          {
+            id: Date.now(),
+            role: "system",
+            content: "Interview neu gestartet.",
+          },
+        ]);
         setIsInterviewComplete(false);
         setStatus(response.status || null);
 
@@ -722,7 +753,11 @@ function App() {
 
   // Start new role interview
   async function handleNewRoleInterview() {
-    if (!confirm("Neues Interview für andere Rolle starten?\nAktuelles wird gespeichert.")) {
+    if (
+      !confirm(
+        "Neues Interview für andere Rolle starten?\nAktuelles wird gespeichert."
+      )
+    ) {
       return;
     }
 
@@ -734,7 +769,11 @@ function App() {
 
       if (response.success) {
         setMessages([
-          { id: Date.now(), role: "system", content: `✅ Neues Interview. (${response.completed_interviews} gespeichert)` },
+          {
+            id: Date.now(),
+            role: "system",
+            content: `✅ Neues Interview. (${response.completed_interviews} gespeichert)`,
+          },
         ]);
         setIsInterviewComplete(false);
         setStatus(response.status || null);
@@ -757,7 +796,11 @@ function App() {
 
   // Switch to a completed interview
   async function handleSwitchInterview(index: number) {
-    if (!confirm("Zu diesem Interview wechseln?\nAktueller Fortschritt wird gespeichert.")) {
+    if (
+      !confirm(
+        "Zu diesem Interview wechseln?\nAktueller Fortschritt wird gespeichert."
+      )
+    ) {
       return;
     }
 
@@ -770,7 +813,11 @@ function App() {
       if (response.success) {
         // Restore chat history
         const restoredMessages: ChatMessage[] = [
-          { id: Date.now(), role: "system", content: `Gewechselt zu: ${response.switched_to?.role_label}` },
+          {
+            id: Date.now(),
+            role: "system",
+            content: `Gewechselt zu: ${response.switched_to?.role_label}`,
+          },
         ];
 
         if (response.chat_history) {
@@ -799,7 +846,10 @@ function App() {
 
         if (response.next_question) {
           setCurrentQuestion(response.next_question);
-          addAssistantMessage(response.next_question.text, response.next_question.id);
+          addAssistantMessage(
+            response.next_question.text,
+            response.next_question.id
+          );
         }
 
         setIsInterviewComplete(false);
@@ -817,16 +867,24 @@ function App() {
 
   // Switch LLM backend
   async function handleSwitchBackend(backend: "local" | "mistral_api") {
-    setProcessStatus(`Wechsle zu ${backend === "local" ? "Lokal" : "Mistral API"}...`);
+    setProcessStatus(
+      `Wechsle zu ${backend === "local" ? "Lokal" : "Mistral API"}...`
+    );
 
     try {
       const response = await switchLLMBackend(backend);
 
       if (response.success && response.status) {
         setLlmStatus(response.status);
-        addSystemMessage(`✅ Backend: ${backend === "local" ? "Lokales Modell" : "Mistral API"}`);
+        addSystemMessage(
+          `✅ Backend: ${
+            backend === "local" ? "Lokales Modell" : "Mistral API"
+          }`
+        );
       } else {
-        addSystemMessage(`⚠️ Backend-Wechsel fehlgeschlagen: ${response.message}`);
+        addSystemMessage(
+          `⚠️ Backend-Wechsel fehlgeschlagen: ${response.message}`
+        );
       }
     } catch (error) {
       console.error("Error switching backend:", error);
@@ -851,7 +909,9 @@ function App() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${projectName || "Prozessdokumentation"}_${new Date().toISOString().slice(0, 10)}.pdf`;
+      a.download = `${projectName || "Prozessdokumentation"}_${new Date()
+        .toISOString()
+        .slice(0, 10)}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -860,7 +920,9 @@ function App() {
       addSystemMessage("✅ PDF generiert!");
     } catch (error) {
       console.error("Error exporting PDF:", error);
-      addSystemMessage(`❌ PDF-Fehler: ${error instanceof Error ? error.message : "Unbekannt"}`);
+      addSystemMessage(
+        `❌ PDF-Fehler: ${error instanceof Error ? error.message : "Unbekannt"}`
+      );
     } finally {
       setIsLoading(false);
       setProcessStatus(null);
@@ -877,7 +939,7 @@ function App() {
   // Render: Project Name Input
   function renderProjectNameView() {
     return (
-      <div className="h-screen w-screen flex items-center justify-center p-4 bg-slate-100">
+      <div className="h-screen w-screen flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
             <h2 className="text-xl font-semibold">📋 Projekt-Information</h2>
@@ -909,23 +971,39 @@ function App() {
   // Render: Session Restore
   function renderSessionRestoreView() {
     return (
-      <div className="h-screen w-screen flex items-center justify-center p-4 bg-slate-100">
+      <div className="h-screen w-screen flex items-center justify-center p-4 ">
         <Card className="w-full max-w-2xl max-h-[80vh] flex flex-col">
           <CardHeader className="shrink-0">
-            <h2 className="text-xl font-semibold">💾 Gespeicherte Interviews</h2>
-            <p className="text-sm text-slate-500">Fortsetzen oder neu starten?</p>
+            <h2 className="text-xl font-semibold">
+              💾 Gespeicherte Interviews
+            </h2>
+            <p className="text-sm text-slate-500">
+              Fortsetzen oder neu starten?
+            </p>
           </CardHeader>
           <CardContent className="space-y-4 overflow-y-auto">
             {savedSessions.map((session) => {
               const date = new Date(session.last_activity);
-              const dateStr = date.toLocaleDateString("de-DE") + " " +
-                date.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+              const dateStr =
+                date.toLocaleDateString("de-DE") +
+                " " +
+                date.toLocaleTimeString("de-DE", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
 
               return (
-                <div key={session.session_id} className="border rounded-lg p-3 bg-white">
+                <div
+                  key={session.session_id}
+                  className="border rounded-lg p-3 bg-white"
+                >
                   <div className="flex justify-between items-start gap-2">
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium truncate">{session.session_name || session.role || "Nicht klassifiziert"}</p>
+                      <p className="font-medium truncate">
+                        {session.session_name ||
+                          session.role ||
+                          "Nicht klassifiziert"}
+                      </p>
                       <p className="text-xs text-slate-500">{dateStr}</p>
                       {session.role && session.session_name && (
                         <span className="inline-block bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded text-xs mt-1">
@@ -933,7 +1011,9 @@ function App() {
                         </span>
                       )}
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs">{session.answered_questions} Fragen</span>
+                        <span className="text-xs">
+                          {session.answered_questions} Fragen
+                        </span>
                         {session.progress_percent !== undefined && (
                           <span className="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-xs">
                             {session.progress_percent}%
@@ -942,10 +1022,19 @@ function App() {
                       </div>
                     </div>
                     <div className="flex gap-1 shrink-0">
-                      <Button size="sm" onClick={() => handleContinueSession(session.session_id)}>
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          handleContinueSession(session.session_id)
+                        }
+                      >
                         Fortsetzen
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleDeleteSession(session.session_id)}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDeleteSession(session.session_id)}
+                      >
                         ×
                       </Button>
                     </div>
@@ -954,7 +1043,11 @@ function App() {
               );
             })}
             <Separator />
-            <Button className="w-full" variant="outline" onClick={handleStartNewSession}>
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={handleStartNewSession}
+            >
               Neues Interview
             </Button>
           </CardContent>
@@ -966,7 +1059,7 @@ function App() {
   // Render: Role Selection
   function renderRoleSelectionView() {
     return (
-      <div className="h-screen w-screen flex items-center justify-center p-4 bg-slate-100">
+      <div className="h-screen w-screen flex items-center justify-center p-4 ">
         <Card className="w-full max-w-2xl">
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -994,11 +1087,20 @@ function App() {
                 { role: "fach", icon: "👔", label: "Fachabteilung" },
                 { role: "it", icon: "💻", label: "IT-Abteilung" },
                 { role: "management", icon: "📊", label: "Management" },
-                { role: "auto", icon: "🤖", label: "Auto-Erkennung", highlight: true },
+                {
+                  role: "auto",
+                  icon: "🤖",
+                  label: "Auto-Erkennung",
+                  highlight: true,
+                },
               ].map(({ role, icon, label, highlight }) => (
                 <Button
                   key={role}
-                  className={`h-20 flex flex-col ${highlight ? "bg-[#313192] text-white hover:bg-[#252578]" : ""}`}
+                  className={`h-20 flex flex-col ${
+                    highlight
+                      ? "bg-[#313192] text-white hover:bg-[#252578]"
+                      : ""
+                  }`}
                   variant={highlight ? "default" : "outline"}
                   onClick={() => handleStartInterviewWithRole(role)}
                 >
@@ -1016,11 +1118,13 @@ function App() {
   // Render: Loading
   function renderLoadingView() {
     return (
-      <div className="h-screen w-screen flex items-center justify-center p-4 bg-slate-100">
+      <div className="h-screen w-screen flex items-center justify-center p-4 ">
         <Card className="w-full max-w-md">
           <CardContent className="p-8 text-center">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#313192] mx-auto mb-4"></div>
-            <p className="text-slate-600 text-sm">{processStatus || "Laden..."}</p>
+            <p className="text-slate-600 text-sm">
+              {processStatus || "Laden..."}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -1029,10 +1133,11 @@ function App() {
 
   // Render: Chat
   function renderChatView() {
-    const hasCompletedRoles = status?.completed_roles && status.completed_roles.length > 0;
+    const hasCompletedRoles =
+      status?.completed_roles && status.completed_roles.length > 0;
 
     return (
-      <div className="h-screen w-screen flex items-center justify-center p-4 bg-slate-100">
+      <div className="h-screen w-screen flex items-center justify-center p-4 ">
         <Card className="w-full max-w-4xl h-[90vh] flex flex-col border border-primary shadow-lg">
           {/* Header */}
           <CardHeader className="space-y-2 border-b shrink-0 py-2">
@@ -1043,24 +1148,32 @@ function App() {
                   {projectName || "42° AI Assistant"}
                 </p>
               </div>
-              
+
               {/* Action Buttons */}
               <div className="flex gap-1 shrink-0">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => { setShowRoles(!showRoles); setShowSettings(false); }}
+                  onClick={() => {
+                    setShowRoles(!showRoles);
+                    setShowSettings(false);
+                  }}
                   title="Rollen & Interviews"
-                  className={`h-8 w-8 p-0 ${showRoles ? 'bg-slate-200' : ''}`}
+                  className={`h-8 w-8 p-0 ${showRoles ? "bg-slate-200" : ""}`}
                 >
                   👤
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => { setShowSettings(!showSettings); setShowRoles(false); }}
+                  onClick={() => {
+                    setShowSettings(!showSettings);
+                    setShowRoles(false);
+                  }}
                   title="Einstellungen"
-                  className={`h-8 w-8 p-0 ${showSettings ? 'bg-slate-200' : ''}`}
+                  className={`h-8 w-8 p-0 ${
+                    showSettings ? "bg-slate-200" : ""
+                  }`}
                 >
                   ⚙️
                 </Button>
@@ -1068,7 +1181,9 @@ function App() {
                   variant="ghost"
                   size="sm"
                   onClick={handleExportPDF}
-                  disabled={isLoading || !status || status.answered_questions === 0}
+                  disabled={
+                    isLoading || !status || status.answered_questions === 0
+                  }
                   title="PDF exportieren"
                   className="h-8 w-8 p-0"
                 >
@@ -1092,11 +1207,17 @@ function App() {
               <div className="bg-slate-50 rounded-lg p-3 space-y-3 text-xs">
                 {/* Aktuelle Rolle */}
                 <div>
-                  <p className="font-medium text-slate-700 mb-1">Aktuelle Rolle</p>
+                  <p className="font-medium text-slate-700 mb-1">
+                    Aktuelle Rolle
+                  </p>
                   <div className="bg-[#313192] text-white px-3 py-2 rounded flex items-center justify-between">
-                    <span className="font-medium">{status?.role_label || "Rolle wird erkannt..."}</span>
+                    <span className="font-medium">
+                      {status?.role_label || "Rolle wird erkannt..."}
+                    </span>
                     {status?.progress && (
-                      <span className="bg-white/20 px-2 py-0.5 rounded">{status.progress.percent}%</span>
+                      <span className="bg-white/20 px-2 py-0.5 rounded">
+                        {status.progress.percent}%
+                      </span>
                     )}
                   </div>
                 </div>
@@ -1117,16 +1238,24 @@ function App() {
                 {/* Abgeschlossene Interviews */}
                 {hasCompletedRoles && (
                   <div>
-                    <p className="font-medium text-slate-700 mb-1">Abgeschlossene Interviews ({status!.completed_roles.length})</p>
+                    <p className="font-medium text-slate-700 mb-1">
+                      Abgeschlossene Interviews (
+                      {status!.completed_roles.length})
+                    </p>
                     <div className="space-y-1">
                       {status!.completed_roles.map((role, idx) => (
                         <button
                           key={idx}
-                          onClick={() => { handleSwitchInterview(idx); setShowRoles(false); }}
+                          onClick={() => {
+                            handleSwitchInterview(idx);
+                            setShowRoles(false);
+                          }}
                           className="w-full flex items-center justify-between bg-white px-2 py-1.5 rounded border border-slate-200 hover:bg-green-50 hover:border-green-300 transition-colors"
                         >
                           <span>👤 {role.role_label}</span>
-                          <span className="text-green-600 font-medium">{role.progress_percent}% ✓</span>
+                          <span className="text-green-600 font-medium">
+                            {role.progress_percent}% ✓
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -1144,29 +1273,52 @@ function App() {
                   <div className="flex gap-2">
                     <Button
                       size="sm"
-                      variant={llmStatus?.current === "local" ? "default" : "outline"}
+                      variant={
+                        llmStatus?.current === "local" ? "default" : "outline"
+                      }
                       onClick={() => handleSwitchBackend("local")}
                       disabled={!llmStatus?.local.available}
-                      className={`flex-1 text-xs h-8 ${llmStatus?.current === "local" ? "ring-2 ring-green-500 ring-offset-1" : ""}`}
+                      className={`flex-1 text-xs h-8 ${
+                        llmStatus?.current === "local"
+                          ? "ring-2 ring-green-500 ring-offset-1"
+                          : ""
+                      }`}
                     >
                       <span className="flex flex-col items-center">
-                        <span>{llmStatus?.local.available ? "✓" : "✗"} Lokal</span>
+                        <span>
+                          {llmStatus?.local.available ? "✓" : "✗"} Lokal
+                        </span>
                         {llmStatus?.current === "local" && (
-                          <span className="text-[10px] opacity-80">{llmStatus.local.model}</span>
+                          <span className="text-[10px] opacity-80">
+                            {llmStatus.local.model}
+                          </span>
                         )}
                       </span>
                     </Button>
                     <Button
                       size="sm"
-                      variant={llmStatus?.current === "mistral_api" ? "default" : "outline"}
+                      variant={
+                        llmStatus?.current === "mistral_api"
+                          ? "default"
+                          : "outline"
+                      }
                       onClick={() => handleSwitchBackend("mistral_api")}
                       disabled={!llmStatus?.mistral_api.has_key}
-                      className={`flex-1 text-xs h-8 ${llmStatus?.current === "mistral_api" ? "ring-2 ring-green-500 ring-offset-1" : ""}`}
+                      className={`flex-1 text-xs h-8 ${
+                        llmStatus?.current === "mistral_api"
+                          ? "ring-2 ring-green-500 ring-offset-1"
+                          : ""
+                      }`}
                     >
                       <span className="flex flex-col items-center">
-                        <span>{llmStatus?.mistral_api.has_key ? "✓" : "✗"} Mistral API</span>
+                        <span>
+                          {llmStatus?.mistral_api.has_key ? "✓" : "✗"} Mistral
+                          API
+                        </span>
                         {llmStatus?.current === "mistral_api" && (
-                          <span className="text-[10px] opacity-80">{llmStatus.mistral_api.model}</span>
+                          <span className="text-[10px] opacity-80">
+                            {llmStatus.mistral_api.model}
+                          </span>
                         )}
                       </span>
                     </Button>
@@ -1176,16 +1328,25 @@ function App() {
                 {/* Dokumente */}
                 {uploadedFiles.length > 0 && (
                   <div>
-                    <p className="font-medium text-slate-700 mb-1">Dokumente ({uploadedFiles.length})</p>
+                    <p className="font-medium text-slate-700 mb-1">
+                      Dokumente ({uploadedFiles.length})
+                    </p>
                     <div className="space-y-1 max-h-32 overflow-y-auto">
                       {uploadedFiles.map((file) => (
                         <div
                           key={file.filename}
                           className="flex items-center justify-between bg-white px-2 py-1 rounded border border-slate-200"
                         >
-                          <span className="truncate flex-1" title={file.filename}>{file.filename}</span>
+                          <span
+                            className="truncate flex-1"
+                            title={file.filename}
+                          >
+                            {file.filename}
+                          </span>
                           <div className="flex items-center gap-2 ml-2 shrink-0">
-                            <span className="text-slate-400">{formatFileSize(file.size)}</span>
+                            <span className="text-slate-400">
+                              {formatFileSize(file.size)}
+                            </span>
                             <button
                               onClick={() => handleDeleteFile(file.filename)}
                               className="text-red-400 hover:text-red-600"
@@ -1208,16 +1369,24 @@ function App() {
                 {status?.role_label || "Rolle wird erkannt..."}
               </span>
               {status?.progress && (
-                <span className="text-slate-500">{status.progress.percent}%</span>
+                <span className="text-slate-500">
+                  {status.progress.percent}%
+                </span>
               )}
               {status && (
-                <span className="text-slate-400">• {status.answered_questions} Fragen</span>
+                <span className="text-slate-400">
+                  • {status.answered_questions} Fragen
+                </span>
               )}
               {hasCompletedRoles && (
-                <span className="text-green-600">• {status!.completed_roles.length} abgeschl.</span>
+                <span className="text-green-600">
+                  • {status!.completed_roles.length} abgeschl.
+                </span>
               )}
               {uploadedFiles.length > 0 && (
-                <span className="text-slate-400">• {uploadedFiles.length} Dok.</span>
+                <span className="text-slate-400">
+                  • {uploadedFiles.length} Dok.
+                </span>
               )}
             </div>
 
@@ -1231,8 +1400,8 @@ function App() {
                     backgroundColor: status.progress.is_complete
                       ? "#4caf50"
                       : status.progress.percent >= 50
-                        ? "#2196f3"
-                        : "#ff9800",
+                      ? "#2196f3"
+                      : "#ff9800",
                   }}
                 />
               </div>
@@ -1246,7 +1415,10 @@ function App() {
                 {messages.map((msg) => {
                   if (msg.role === "system") {
                     return (
-                      <div key={msg.id} className="text-center text-xs text-slate-500 py-1.5 bg-slate-50 rounded">
+                      <div
+                        key={msg.id}
+                        className="text-center text-xs text-slate-500 py-1.5 bg-slate-50 rounded"
+                      >
                         {msg.content}
                       </div>
                     );
@@ -1255,25 +1427,36 @@ function App() {
                   const isUser = msg.role === "user";
 
                   return (
-                    <div key={msg.id} className={`flex items-start gap-2 ${isUser ? "" : "justify-end"}`}>
-                      {isUser && (
+                    <div
+                      key={msg.id}
+                      className={`flex items-start gap-2 ${
+                        isUser ? "justify-end" : "justify-start"
+                      }`}
+                    >
+                      {!isUser && (
                         <Avatar className="h-8 w-8">
-                          <AvatarFallback className="text-xs">Du</AvatarFallback>
+                          <AvatarImage src="/42AI-logo.png" alt="AI" />
+                          <AvatarFallback className="text-xs">
+                            42°
+                          </AvatarFallback>
                         </Avatar>
                       )}
+
                       <div
                         className={`rounded-lg px-3 py-2 text-sm max-w-[75%] whitespace-pre-wrap ${
                           isUser
-                            ? "bg-white border border-slate-200 text-slate-900"
-                            : "bg-[#313192] text-white"
+                            ? "bg-[#313192] text-white"
+                            : "bg-white border border-slate-200 text-slate-900"
                         }`}
                       >
                         {msg.content}
                       </div>
-                      {!isUser && (
+
+                      {isUser && (
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src="/42AI-logo.png" alt="AI" />
-                          <AvatarFallback className="text-xs">42°</AvatarFallback>
+                          <AvatarFallback className="text-xs">
+                            Du
+                          </AvatarFallback>
                         </Avatar>
                       )}
                     </div>
@@ -1282,7 +1465,7 @@ function App() {
 
                 {/* Streaming text */}
                 {streamingText && (
-                  <div className="flex items-start gap-2 justify-end">
+                  <div className="flex items-start gap-2 justify-start">
                     <div className="rounded-lg px-3 py-2 text-sm max-w-[75%] bg-[#313192] text-white whitespace-pre-wrap">
                       {streamingText}
                       <span className="animate-pulse">|</span>
@@ -1314,7 +1497,10 @@ function App() {
             <Separator />
 
             {/* Input Form */}
-            <form className="flex gap-2 items-center shrink-0" onSubmit={handleSubmit}>
+            <form
+              className="flex gap-2 items-center shrink-0"
+              onSubmit={handleSubmit}
+            >
               <input
                 type="file"
                 id="fileInput"
@@ -1337,7 +1523,9 @@ function App() {
               <Textarea
                 ref={textareaRef}
                 className="flex-1 resize-none max-h-24 overflow-y-auto text-sm"
-                placeholder={isInterviewComplete ? "Abgeschlossen" : "Antwort eingeben..."}
+                placeholder={
+                  isInterviewComplete ? "Abgeschlossen" : "Antwort eingeben..."
+                }
                 rows={2}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -1350,7 +1538,11 @@ function App() {
                   }
                 }}
               />
-              <Button type="submit" disabled={isLoading || isInterviewComplete || !input.trim()} size="sm">
+              <Button
+                type="submit"
+                disabled={isLoading || isInterviewComplete || !input.trim()}
+                size="sm"
+              >
                 {isLoading ? "..." : "➤"}
               </Button>
             </form>
