@@ -41,7 +41,7 @@ class PDFDocumentGenerator:
                 parent=base_styles['Heading1'],
                 fontSize=24,
                 spaceAfter=30,
-                textColor=colors.HexColor('#2c3e50'),
+                textColor=colors.HexColor('#1d1d1b'),
                 alignment=TA_CENTER
             ),
             'subtitle': ParagraphStyle(
@@ -49,7 +49,7 @@ class PDFDocumentGenerator:
                 parent=base_styles['Normal'],
                 fontSize=12,
                 spaceAfter=20,
-                textColor=colors.HexColor('#7f8c8d'),
+                textColor=colors.HexColor('#69727d'),
                 alignment=TA_CENTER
             ),
             'section_header': ParagraphStyle(
@@ -58,7 +58,7 @@ class PDFDocumentGenerator:
                 fontSize=16,
                 spaceBefore=20,
                 spaceAfter=12,
-                textColor=colors.HexColor('#2980b9'),
+                textColor=colors.HexColor('#1d1d1b'),
                 borderPadding=(0, 0, 5, 0)
             ),
             'subsection_header': ParagraphStyle(
@@ -67,7 +67,7 @@ class PDFDocumentGenerator:
                 fontSize=13,
                 spaceBefore=15,
                 spaceAfter=8,
-                textColor=colors.HexColor('#34495e')
+                textColor=colors.HexColor('#140d56')
             ),
             'body': ParagraphStyle(
                 'CustomBody',
@@ -75,7 +75,8 @@ class PDFDocumentGenerator:
                 fontSize=10,
                 spaceAfter=8,
                 alignment=TA_JUSTIFY,
-                leading=14
+                leading=14,
+                textColor=colors.HexColor('#1d1d1b'),
             ),
             'body_bold': ParagraphStyle(
                 'CustomBodyBold',
@@ -89,7 +90,8 @@ class PDFDocumentGenerator:
                 parent=base_styles['Normal'],
                 fontSize=10,
                 leftIndent=20,
-                spaceAfter=4
+                spaceAfter=4,
+                textColor=colors.HexColor('#1d1d1b'),
             ),
             'role_header': ParagraphStyle(
                 'RoleHeader',
@@ -105,7 +107,7 @@ class PDFDocumentGenerator:
                 'Footer',
                 parent=base_styles['Normal'],
                 fontSize=8,
-                textColor=colors.HexColor('#95a5a6'),
+                textColor=colors.HexColor('#69727d'),
                 alignment=TA_CENTER
             )
         }
@@ -1114,7 +1116,7 @@ Erstelle jetzt das vollständige JSON-Objekt mit allen analysierten Informatione
             if item:
                 list_items.append(ListItem(
                     Paragraph(str(item), self.styles['body']),
-                    bulletColor=colors.HexColor('#3498db')
+                    bulletColor=colors.HexColor('#1d1d1b')
                 ))
         
         return ListFlowable(
