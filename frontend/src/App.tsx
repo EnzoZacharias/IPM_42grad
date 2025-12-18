@@ -977,7 +977,7 @@ function App() {
             <h2 className="text-xl font-semibold">
               💾 Gespeicherte Interviews
             </h2>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-(--color-grau)">
               Fortsetzen oder neu starten?
             </p>
           </CardHeader>
@@ -993,20 +993,18 @@ function App() {
                 });
 
               return (
-                <div
-                  key={session.session_id}
-                  className="border rounded-lg p-3 bg-white"
-                >
-                  <div className="flex justify-between items-start gap-2">
+                // gespeicherte Interviews
+                <div key={session.session_id} className="border rounded-lg p-3">
+                  <div className="flex justify-between items-start gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="font-medium truncate">
                         {session.session_name ||
                           session.role ||
                           "Nicht klassifiziert"}
                       </p>
-                      <p className="text-xs text-slate-500">{dateStr}</p>
+                      <p className="text-xs text-(--color-grau)">{dateStr}</p>
                       {session.role && session.session_name && (
-                        <span className="inline-block bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded text-xs mt-1">
+                        <span className="inline-block bg-(--color-hellgrau) text-(--color-schwarz) px-1.5 py-0.5 rounded text-xs mt-1">
                           {session.role}
                         </span>
                       )}
@@ -1015,7 +1013,7 @@ function App() {
                           {session.answered_questions} Fragen
                         </span>
                         {session.progress_percent !== undefined && (
-                          <span className="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-xs">
+                          <span className="bg-(--color-blau) text-(--color-weiss) px-1.5 py-0.5 rounded text-xs">
                             {session.progress_percent}%
                           </span>
                         )}
@@ -1122,7 +1120,7 @@ function App() {
         <Card className="w-full max-w-md">
           <CardContent className="p-8 text-center">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#313192] mx-auto mb-4"></div>
-            <p className="text-slate-600 text-sm">
+            <p className="text-(--color-grau) text-sm">
               {processStatus || "Laden..."}
             </p>
           </CardContent>
@@ -1215,7 +1213,7 @@ function App() {
                       {status?.role_label || "Rolle wird erkannt..."}
                     </span>
                     {status?.progress && (
-                      <span className="bg-white/20 px-2 py-0.5 rounded">
+                      <span className="bg-(--color-grau) px-2 py-0.5 rounded">
                         {status.progress.percent}%
                       </span>
                     )}
@@ -1253,7 +1251,7 @@ function App() {
                           className="w-full flex items-center justify-between bg-white px-2 py-1.5 rounded border border-slate-200 hover:bg-green-50 hover:border-green-300 transition-colors"
                         >
                           <span>👤 {role.role_label}</span>
-                          <span className="text-green-600 font-medium">
+                          <span className="text-(--color-dunkelblau) font-medium">
                             {role.progress_percent}% ✓
                           </span>
                         </button>
@@ -1280,7 +1278,7 @@ function App() {
                       disabled={!llmStatus?.local.available}
                       className={`flex-1 text-xs h-8 ${
                         llmStatus?.current === "local"
-                          ? "ring-2 ring-green-500 ring-offset-1"
+                          ? "ring-2 ring-g(--color-dunkelblau) ring-offset-1"
                           : ""
                       }`}
                     >
@@ -1306,7 +1304,7 @@ function App() {
                       disabled={!llmStatus?.mistral_api.has_key}
                       className={`flex-1 text-xs h-8 ${
                         llmStatus?.current === "mistral_api"
-                          ? "ring-2 ring-green-500 ring-offset-1"
+                          ? "ring-2 ring-(--color-dunkelblau) ring-offset-1"
                           : ""
                       }`}
                     >
@@ -1328,14 +1326,14 @@ function App() {
                 {/* Dokumente */}
                 {uploadedFiles.length > 0 && (
                   <div>
-                    <p className="font-medium text-slate-700 mb-1">
+                    <p className="font-medium text-(--color-grau) mb-1">
                       Dokumente ({uploadedFiles.length})
                     </p>
                     <div className="space-y-1 max-h-32 overflow-y-auto">
                       {uploadedFiles.map((file) => (
                         <div
                           key={file.filename}
-                          className="flex items-center justify-between bg-white px-2 py-1 rounded border border-slate-200"
+                          className="flex items-center justify-between bg-white px-1 py-1 rounded border border-slate-200"
                         >
                           <span
                             className="truncate flex-1"
@@ -1343,13 +1341,12 @@ function App() {
                           >
                             {file.filename}
                           </span>
-                          <div className="flex items-center gap-2 ml-2 shrink-0">
+                          <div className="flex items-center gap-3 ml-3 shrink-0">
                             <span className="text-slate-400">
                               {formatFileSize(file.size)}
                             </span>
                             <button
                               onClick={() => handleDeleteFile(file.filename)}
-                              className="text-red-400 hover:text-red-600"
                               title="Löschen"
                             >
                               ✗
@@ -1466,27 +1463,29 @@ function App() {
                 {/* Streaming text */}
                 {streamingText && (
                   <div className="flex items-start gap-2 justify-start">
-                    <div className="rounded-lg px-3 py-2 text-sm max-w-[75%] bg-[#313192] text-white whitespace-pre-wrap">
-                      {streamingText}
-                      <span className="animate-pulse">|</span>
-                    </div>
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="/42AI-logo.png" alt="AI" />
                       <AvatarFallback className="text-xs">42°</AvatarFallback>
                     </Avatar>
+
+                    <div className="rounded-lg px-3 py-2 text-sm max-w-[75%] bg-white border border-slate-200 text-slate-900 whitespace-pre-wrap">
+                      {streamingText}
+                      <span className="animate-pulse">|</span>
+                    </div>
                   </div>
                 )}
 
                 {/* Loading indicator */}
                 {isLoading && !streamingText && (
-                  <div className="flex items-start gap-2 justify-end">
-                    <div className="rounded-lg px-3 py-2 text-sm bg-[#313192] text-white">
-                      <span className="animate-pulse">...</span>
-                    </div>
+                  <div className="flex items-start gap-2 justify-start">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="/42AI-logo.png" alt="AI" />
                       <AvatarFallback className="text-xs">42°</AvatarFallback>
                     </Avatar>
+
+                    <div className="rounded-lg px-3 py-2 text-sm bg-white border border-slate-200 text-slate-900">
+                      <span className="animate-pulse">...</span>
+                    </div>
                   </div>
                 )}
 

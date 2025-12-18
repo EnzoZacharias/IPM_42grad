@@ -2,6 +2,27 @@
 @import "tw-animate-css";
 
 :root {
+  /* Corporate Design Colors */
+
+  /* Akzent 1: Hellblau */
+  --color-hellblau: #5dabd2;
+  /* Primary: Blau */
+  --color-blau: #313192;
+  /* Sub-Primary: Dunkelblau */
+  --color-dunkelblau: #140d56;
+  /* Neutral 1: Schwarz */
+  --color-schwarz: #1d1d1b;
+  /* Neutral 2: Weiß */
+  --color-weiss: #ffffff;
+  /* Akzent 2: Hellgrün */
+  --color-hellgruen: #7cdb80;
+  /* texte: Grau */
+  --color-grau: #69727d;
+
+  --color-hellgrau: #DEE0E3;
+
+  --radius: 0.75rem;
+
   color-scheme: light;
 
   --background: #1d1d1b;
@@ -14,24 +35,24 @@
   --primary-foreground: #ffffff;
 
   --muted: #f3f4f6;
-  --muted-foreground: #4b5563;
+  --muted-foreground: #596372;
 
   --border: #e5e7eb;
   --input: #e5e7eb;
 
   --ring: #5dabd2;
-  --radius: 0.75rem;
 }
 
 button {
-  padding: 15px;
-  font-size: 15px;
+  padding: 12px;
+  font-size: 14px;
   font-weight: 500;
   font-family: inherit;
   background-color: #313192;
   color: white;
   cursor: pointer;
   transition: border-color 0.25s;
+  border-radius: 15px;
 }
 
 button:hover {
